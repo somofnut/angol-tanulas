@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AngolÚt – Tanulj angolul magyarként</title>
+<style>
+:root{
+  --bg:#f7f9fc; --card:#ffffff; --text:#1c2430; --muted:#5b6b7f;
+  --green:#39b54a; --green-dark:#2c9a3b; --blue:#2f80ed; --red:#e05252;
+  --gold:#f2b134; --border:#e3e9f2; --shadow:0 2px 10px rgba(20,40,80,.08);
+  --radius:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#141a22; --card:#1e2733; --text:#eaf0f7; --muted:#9db0c4; --border:#2c3947; --shadow:0 2px 10px rgba(0,0,0,.35); }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;padding-bottom:80px}
+header{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--border);box-shadow:var(--shadow)}
+.topbar{max-width:960px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:12px;flex-wrap:wrap}
+.logo{font-size:1.35rem;font-weight:800}
+.logo span{color:var(--green)}
+.stats{display:flex;gap:14px;font-weight:700;font-size:.95rem}
+.stats .xp{color:var(--gold)} .stats .streak{color:var(--red)}
+nav{display:flex;gap:6px;max-width:960px;margin:auto;padding:0 12px 10px;flex-wrap:wrap}
+nav button{border:none;background:transparent;color:var(--muted);font-weight:700;font-size:.95rem;padding:8px 14px;border-radius:999px;cursor:pointer;transition:.15s}
+nav button:hover{background:var(--bg)}
+nav button.active{background:var(--green);color:#fff}
+main{max-width:960px;margin:auto;padding:20px 16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:18px}
+h1{font-size:1.7rem;margin-bottom:8px}
+h2{font-size:1.25rem;margin-bottom:10px}
+h3{font-size:1.05rem;margin:14px 0 6px}
+p.lead{color:var(--muted);margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.btn{display:inline-block;border:none;border-radius:12px;padding:12px 22px;font-size:1rem;font-weight:800;cursor:pointer;transition:.15s;background:var(--green);color:#fff;box-shadow:0 3px 0 var(--green-dark)}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(2px);box-shadow:none}
+.btn.blue{background:var(--blue);box-shadow:0 3px 0 #1f66c4}
+.btn.ghost{background:transparent;color:var(--blue);box-shadow:none;border:2px solid var(--blue)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.pill{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:3px 12px;font-size:.8rem;font-weight:700;color:var(--muted)}
+.hidden{display:none!important}
+/* lessons */
+.lesson-card{cursor:pointer;transition:.15s}
+.lesson-card:hover{transform:translateY(-3px)}
+.lesson-card .emoji{font-size:2rem}
+.progressbar{height:10px;background:var(--bg);border:1px solid var(--border);border-radius:999px;overflow:hidden;margin-top:8px}
+.progressbar>div{height:100%;background:var(--green);width:0%;transition:width .4s}
+/* flashcard */
+.flash{max-width:420px;margin:20px auto;perspective:900px;cursor:pointer}
+.flash-inner{position:relative;width:100%;height:200px;transition:transform .5s;transform-style:preserve-3d}
+.flash.flipped .flash-inner{transform:rotateY(180deg)}
+.flash-face{position:absolute;inset:0;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--card);border:2px solid var(--border);border-radius:var(--radius);font-size:1.6rem;font-weight:800;box-shadow:var(--shadow);padding:16px;text-align:center}
+.flash-face.back{transform:rotateY(180deg);border-color:var(--green)}
+.flash-face small{font-size:.85rem;color:var(--muted);font-weight:600}
+/* quiz */
+.q-option{display:block;width:100%;text-align:left;background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:14px 16px;font-size:1rem;font-weight:600;color:var(--text);cursor:pointer;margin-bottom:10px;transition:.15s}
+.q-option:hover{border-color:var(--blue)}
+.q-option.correct{border-color:var(--green);background:rgba(57,181,74,.12)}
+.q-option.wrong{border-color:var(--red);background:rgba(224,82,82,.12)}
+input[type=text],textarea{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:12px 14px;font-size:1rem;color:var(--text);font-family:inherit}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--blue)}
+textarea{min-height:140px;resize:vertical}
+.feedback{margin:12px 0;padding:12px 16px;border-radius:12px;font-weight:700}
+.feedback.ok{background:rgba(57,181,74,.12);color:var(--green)}
+.feedback.no{background:rgba(224,82,82,.12);color:var(--red)}
+/* translator */
+.trans-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.trans-row{grid-template-columns:1fr}}
+.dropzone{border:2px dashed var(--border);border-radius:var(--radius);padding:26px;text-align:center;color:var(--muted);cursor:pointer;transition:.15s}
+.dropzone:hover,.dropzone.drag{border-color:var(--blue);color:var(--blue)}
+.lang-badge{font-weight:800;color:var(--blue)}
+.tip{border-left:4px solid var(--green);padding:10px 14px;background:var(--bg);border-radius:0 12px 12px 0;margin-bottom:12px}
+.tip b{color:var(--green)}
+footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);text-align:center;padding:8px;font-size:.8rem;color:var(--muted)}
+.big-result{text-align:center;padding:20px}
+.big-result .score{font-size:3rem;font-weight:900;color:var(--green)}
+/* learning path */
+.path{display:flex;flex-direction:column;align-items:center;gap:30px;padding:20px 0}
+.node-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;transition:transform .15s}
+.node-wrap:nth-child(odd){transform:translateX(-60px)}
+.node-wrap:nth-child(even){transform:translateX(60px)}
+@media(max-width:500px){.node-wrap:nth-child(odd){transform:translateX(-38px)}.node-wrap:nth-child(even){transform:translateX(38px)}}
+.node{width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.9rem;border:none;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.18);transition:.15s;background:var(--green);color:#fff}
+.node:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.node.done{background:var(--gold)}
+.node.locked{background:var(--border);color:var(--muted);cursor:not-allowed;box-shadow:0 5px 0 rgba(0,0,0,.08)}
+.node.current{animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+.node-label{font-size:.8rem;font-weight:700;color:var(--muted)}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;min-height:48px;padding:8px;border:2px dashed var(--border);border-radius:12px}
+.chip{border:2px solid var(--border);background:var(--card);border-radius:10px;padding:8px 14px;font-weight:700;font-size:1rem;cursor:pointer;color:var(--text);transition:.12s}
+.chip:hover{border-color:var(--blue)}
+.err-item{border:1px solid var(--border);border-left:4px solid var(--red);border-radius:0 12px 12px 0;padding:10px 14px;margin-bottom:10px;text-align:left}
+.err-item .good{color:var(--green);font-weight:700}
+.err-item .bad{color:var(--red);text-decoration:line-through}
+.motiv{font-size:1.15rem;background:rgba(242,177,52,.12);border:1px solid var(--gold);border-radius:12px;padding:14px 18px;margin:14px 0;font-weight:600}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="logo">🇭🇺 Angol<span>Út</span> 🇬🇧</div>
+    <div class="stats">
+      <span class="xp">⭐ <span id="xp">0</span> XP</span>
+      <span class="streak">🔥 <span id="streak">0</span> nap</span>
+    </div>
+  </div>
+  <nav id="nav">
+    <button data-page="home" class="active">🏠 Kezdőlap</button>
+    <button data-page="path">🛤️ Tanulási út</button>
+    <button data-page="lessons">📚 Leckék</button>
+    <button data-page="quiz">🎯 Nagy kvíz</button>
+    <button data-page="test">🏅 Szintfelmérő</button>
+    <button data-page="translator">🔄 Fordító</button>
+    <button data-page="tips">💡 Tippek</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ===================== HOME ===================== -->
+<section id="page-home">
+  <div class="card">
+    <h1>Üdvözlünk az AngolÚton! 👋</h1>
+    <p class="lead">Ingyenes, magyaroknak készült angoltanuló oldal. Nincs regisztráció, nincs reklám – a haladásod ebben a böngészőben mentődik automatikusan.</p>
+    <div class="grid">
+      <div class="card lesson-card" onclick="go('path')"><div class="emoji">🛤️</div><h2>Tanulási út</h2><p>30 témázott szint + végtelen mód, véletlenszerű feladatokkal.</p></div>
+      <div class="card lesson-card" onclick="go('lessons')"><div class="emoji">📚</div><h2>Leckék</h2><p>Szókártyák témák szerint: alapok, utazás, munka és több.</p></div>
+      <div class="card lesson-card" onclick="go('quiz')"><div class="emoji">🎯</div><h2>Nagy kvíz</h2><p>10 kérdéses teszt írás- és beszédkészségre – XP-t érsz vele!</p></div>
+      <div class="card lesson-card" onclick="go('translator')"><div class="emoji">🔄</div><h2>Fordító</h2><p>Tölts fel szövegfájlt – felismeri a nyelvet és lefordítja.</p></div>
+      <div class="card lesson-card" onclick="go('tips')"><div class="emoji">💡</div><h2>Tippek</h2><p>Magyar szemszögből: mire figyelj, mi a leggyakoribb hiba.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LEARNING PATH ===================== -->
+<section id="page-path" class="hidden">
+  <div id="path-map">
+    <div class="card">
+      <h1>🛤️ Tanulási út</h1>
+      <p class="lead">Haladj lefelé a pályán! Minden szint <b>véletlenszerűen generált</b> feladatokat ad, amik a szintedhez igazodnak – ha nehezen megy, könnyebb kérdéseket kapsz, ha jól megy, nehezebbeket. Egy szint teljesítéséhez legalább <b>70%</b> kell.</p>
+      <p class="lead">🗓️ <b>1–5. szint:</b> hétköznapi beszélgetések · 💬 <b>6–10.:</b> ritkább mindennapi mondatok · 🧩 <b>11–20.:</b> összetett mondatok · 🎓 <b>21–30.:</b> haladó nyelv</p>
+      <button class="btn" style="background:var(--gold);box-shadow:0 3px 0 #c98f1f" onclick="startEndless()">♾️ Végtelen mód – 3 élet, meddig jutsz?</button>
+    </div>
+    <div class="path" id="path-nodes"></div>
+  </div>
+  <div id="path-session" class="hidden">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <span class="pill" id="ps-counter"></span>
+        <button class="btn ghost" onclick="quitSession()">✖ Kilépés</button>
+      </div>
+      <div class="progressbar" style="margin:12px 0"><div id="ps-progress"></div></div>
+      <h2 id="ps-question"></h2>
+      <p class="lead" id="ps-sub"></p>
+      <div id="ps-options"></div>
+      <div id="ps-scramble" class="hidden">
+        <div class="chip-row" id="ps-answer-row"></div>
+        <div class="chip-row" id="ps-word-bank" style="border-style:solid"></div>
+        <button class="btn blue" onclick="checkScramble()">Ellenőrzés</button>
+      </div>
+      <div id="ps-text-wrap" class="hidden">
+        <input type="text" id="ps-text" placeholder="Írd ide a választ..." autocomplete="off">
+        <button class="btn blue" style="margin-top:10px" onclick="checkPathText()">Ellenőrzés</button>
+      </div>
+      <div id="ps-feedback"></div>
+      <button class="btn hidden" id="ps-next" onclick="psNext()">Következő →</button>
+    </div>
+  </div>
+  <div id="path-result" class="hidden"></div>
+</section>
+
+<!-- ===================== LESSONS ===================== -->
+<section id="page-lessons" class="hidden">
+  <div id="lesson-list">
+    <div class="card"><h1>📚 Leckék</h1><p class="lead">Válassz témát! Kattints a kártyára a fordításért, majd jelöld, hogy tudtad-e.</p></div>
+    <div class="grid" id="lesson-grid"></div>
+  </div>
+  <div id="lesson-view" class="hidden">
+    <div class="card">
+      <button class="btn ghost" onclick="closeLesson()">← Vissza</button>
+      <h1 id="lesson-title" style="margin-top:10px"></h1>
+      <p class="lead"><span id="lesson-pos"></span> – kattints a kártyára!</p>
+      <div class="flash" id="flash" onclick="this.classList.toggle('flipped')">
+        <div class="flash-inner">
+          <div class="flash-face"><div id="flash-front"></div><small>🇭🇺 magyar</small></div>
+          <div class="flash-face back"><div id="flash-back"></div><small id="flash-example"></small></div>
+        </div>
+      </div>
+      <div style="text-align:center;display:flex;gap:12px;justify-content:center">
+        <button class="btn" style="background:var(--red);box-shadow:0 3px 0 #b23c3c" onclick="nextCard(false)">😅 Nem tudtam</button>
+        <button class="btn" onclick="nextCard(true)">✅ Tudtam! (+2 XP)</button>
+      </div>
+      <div class="progressbar" style="margin-top:18px"><div id="lesson-progress"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== QUIZ ===================== -->
+<section id="page-quiz" class="hidden">
+  <div class="card" id="quiz-intro">
+    <h1>🎯 A nagy 10 kérdéses kvíz</h1>
+    <p class="lead">Vegyes feladatok: fordítás, helyesírás, mondatalkotás, hallás utáni gondolkodás. Minden helyes válasz <b>10 XP</b>. A végén értékelést kapsz!</p>
+    <button class="btn" onclick="startQuiz()">Kezdjük! 🚀</button>
+  </div>
+  <div class="card hidden" id="quiz-box">
+    <span class="pill" id="quiz-counter"></span>
+    <h2 id="quiz-question" style="margin-top:12px"></h2>
+    <p class="lead" id="quiz-hint"></p>
+    <div id="quiz-options"></div>
+    <div id="quiz-text-wrap" class="hidden">
+      <input type="text" id="quiz-text" placeholder="Írd ide a választ angolul..." autocomplete="off">
+      <button class="btn blue" style="margin-top:10px" onclick="checkTextAnswer()">Ellenőrzés</button>
+    </div>
+    <div id="quiz-feedback"></div>
+    <button class="btn hidden" id="quiz-next" onclick="nextQuestion()">Következő →</button>
+  </div>
+  <div class="card hidden" id="quiz-result"></div>
+</section>
+
+<!-- ===================== PLACEMENT TEST ===================== -->
+<section id="page-test" class="hidden">
+  <div class="card" id="test-intro">
+    <h1>🏅 Angol szintfelmérő teszt</h1>
+    <p class="lead">50 kérdés, egyre nehezedő sorrendben, az európai <b>CEFR</b> skála szerint (A1 – C2). Nincs időkorlát, de nincs visszalépés és menet közben nem látod, mit rontottál el – mint egy igazi nyelvvizsgán. A végén megtudod a szintedet és az összes hibádat.</p>
+    <p class="lead">💡 Tipp: ha nem tudod a választ, tippelj – de a teszt vége felé már nagyon nehéz kérdések jönnek, ez így normális!</p>
+    <button class="btn" onclick="startPlacement()">Teszt indítása 📝</button>
+  </div>
+  <div class="card hidden" id="test-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <span class="pill" id="test-counter"></span>
+      <span class="pill" id="test-band"></span>
+    </div>
+    <div class="progressbar" style="margin:12px 0"><div id="test-progress"></div></div>
+    <h2 id="test-question"></h2>
+    <div id="test-options" style="margin-top:12px"></div>
+  </div>
+  <div id="test-result" class="hidden"></div>
+</section>
+
+<!-- ===================== TRANSLATOR ===================== -->
+<section id="page-translator" class="hidden">
+  <div class="card">
+    <h1>🔄 Fordító és fájlkezelő</h1>
+    <p class="lead">Írj be szöveget vagy tölts fel <b>.txt</b> fájlt. Az oldal felismeri, hogy magyar vagy angol, és lefordítja a másikra. A kész fordítást le is töltheted. <span class="pill">Internetkapcsolat szükséges (MyMemory API)</span></p>
+    <div class="dropzone" id="dropzone">📁 Húzz ide egy .txt fájlt, vagy kattints a tallózáshoz</div>
+    <input type="file" id="file-input" accept=".txt,text/plain" class="hidden">
+    <div class="trans-row" style="margin-top:14px">
+      <div>
+        <h3>Bemenet <span class="lang-badge" id="detected-lang"></span></h3>
+        <textarea id="trans-in" placeholder="Ide írd a szöveget... / Type your text here..."></textarea>
+      </div>
+      <div>
+        <h3>Fordítás <span class="lang-badge" id="target-lang"></span></h3>
+        <textarea id="trans-out" placeholder="Itt jelenik meg a fordítás..." readonly></textarea>
+      </div>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="translateText()">Fordítás 🔄</button>
+      <button class="btn blue" onclick="exportTranslation()">Exportálás .txt-be 💾</button>
+    </div>
+    <p class="lead" id="trans-status" style="margin-top:10px"></p>
+  </div>
+</section>
+
+<!-- ===================== TIPS ===================== -->
+<section id="page-tips" class="hidden">
+  <div class="card">
+    <h1>💡 Tippek magyaroknak</h1>
+    <p class="lead">A leggyakoribb buktatók, amikbe magyar anyanyelvűként belefutsz – és hogyan kerüld el őket.</p>
+    <div class="tip"><b>1. Névelők (a / an / the):</b> A magyarban is van „a/az”, de az angol <i>the</i> használata más. Általános dolgoknál NINCS névelő: <i>„I like dogs”</i>, nem <i>„I like the dogs”</i>.</div>
+    <div class="tip"><b>2. Szórend:</b> A magyar szórend rugalmas, az angol szigorú: <b>Alany + Ige + Tárgy</b>. „Tegnap moziba mentem” → <i>„I went to the cinema yesterday”</i> – az alany (I) sosem maradhat el!</div>
+    <div class="tip"><b>3. Igeidők:</b> A magyarban 3 igeidő van, az angolban 12. Kezdd a 4 leggyakoribbal: Present Simple, Present Continuous, Past Simple, Present Perfect. A Present Perfect (<i>I have seen</i>) a legnehezebb magyaroknak, mert nálunk nincs megfelelője.</div>
+    <div class="tip"><b>4. Kiejtés – a „w” és a „th”:</b> A magyar nyelvben nincs <i>w</i> (mint a <i>water</i>-ben) és nincs <i>th</i> (mint a <i>think</i>-ben). Gyakorold tükör előtt: a „th”-nál a nyelved a fogaid közé kerül!</div>
+    <div class="tip"><b>5. Hamis barátok:</b> <i>actual</i> ≠ aktuális (= tényleges), <i>gymnasium</i> ≠ gimnázium (= tornaterem), <i>sympathy</i> ≠ szimpátia (= együttérzés), <i>novel</i> ≠ novella (= regény)!</div>
+    <div class="tip"><b>6. He / She:</b> A magyar „ő” nem különböztet meg nemet, ezért ez a leggyakoribb magyar hiba. Tudatosan figyelj rá minden mondatnál.</div>
+    <div class="tip"><b>7. Napi 15 perc > heti 2 óra:</b> Az agyad ismétléssel tanul. Minden nap gyakorolj egy keveset – ezért van a 🔥 sorozat-számláló ezen az oldalon!</div>
+    <div class="tip"><b>8. Nézz filmet angol felirattal:</b> Először magyar hanggal + angol felirattal, aztán angol hanggal + angol felirattal. A sorozatok a legjobbak, mert hétköznapi nyelvet használnak.</div>
+    <div class="tip"><b>9. Beszélj hangosan – magadnak is:</b> Mondd ki hangosan, amit tanulsz. A néma tanulás csak olvasáskészséget fejleszt, beszédet nem.</div>
+    <div class="tip"><b>10. Ne fordíts fejben szó szerint:</b> „Jó étvágyat” nem <i>„good appetite”</i>, hanem <i>„enjoy your meal”</i>. Kifejezéseket tanulj, ne csak szavakat!</div>
+  </div>
+</section>
+
+</main>
+
+<footer>AngolÚt – készült ❤️-vel magyar angoltanulóknak · a haladásod csak ebben a böngészőben tárolódik</footer>
+
+<script>
+/* ---------- state ---------- */
+const store = {
+  get xp(){ return +(localStorage.getItem('au_xp')||0) },
+  set xp(v){ localStorage.setItem('au_xp', v); document.getElementById('xp').textContent = v; },
+  get streak(){ return +(localStorage.getItem('au_streak')||0) },
+};
+(function initStreak(){
+  const today = new Date().toDateString();
+  const last = localStorage.getItem('au_last');
+  let s = store.streak;
+  if(last !== today){
+    const y = new Date(); y.setDate(y.getDate()-1);
+    s = (last === y.toDateString()) ? s+1 : 1;
+    localStorage.setItem('au_streak', s);
+    localStorage.setItem('au_last', today);
+  }
+  document.getElementById('streak').textContent = s;
+  document.getElementById('xp').textContent = store.xp;
+})();
+function addXP(n){ store.xp = store.xp + n; }
+
+/* ---------- navigation ---------- */
+function go(page){
+  document.querySelectorAll('main > section').forEach(s=>s.classList.add('hidden'));
+  document.getElementById('page-'+page).classList.remove('hidden');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active', b.dataset.page===page));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('nav').addEventListener('click', e=>{ if(e.target.dataset.page) go(e.target.dataset.page); });
+
+/* ---------- lessons ---------- */
+const LESSONS = [
+  { id:'basics', emoji:'👋', title:'Alapok', words:[
+    ['szia','hello','Hello, how are you?'],['köszönöm','thank you','Thank you very much!'],
+    ['kérem','please','Please help me.'],['igen','yes','Yes, of course.'],
+    ['nem','no','No, thank you.'],['bocsánat','sorry / excuse me','Sorry, I am late.'],
+    ['jó reggelt','good morning','Good morning, everyone!'],['viszlát','goodbye','Goodbye, see you tomorrow!'],
+  ]},
+  { id:'family', emoji:'👨‍👩‍👧', title:'Család', words:[
+    ['anya','mother','My mother cooks well.'],['apa','father','My father works a lot.'],
+    ['testvér','sibling','I have two siblings.'],['nővér / húg','sister','My sister lives in Budapest.'],
+    ['báty / öcs','brother','My brother plays football.'],['nagymama','grandmother','My grandmother is 80 years old.'],
+    ['gyerek','child','The child is playing.'],['család','family','I love my family.'],
+  ]},
+  { id:'food', emoji:'🍽️', title:'Étel és ital', words:[
+    ['kenyér','bread','I buy fresh bread every day.'],['víz','water','Can I have some water?'],
+    ['alma','apple','An apple a day keeps the doctor away.'],['hús','meat','I don\'t eat meat.'],
+    ['leves','soup','Hungarian goulash is a soup.'],['éhes','hungry','I am very hungry.'],
+    ['szomjas','thirsty','Are you thirsty?'],['finom','delicious','This cake is delicious!'],
+  ]},
+  { id:'travel', emoji:'✈️', title:'Utazás', words:[
+    ['repülőtér','airport','The airport is far from the city.'],['vonat','train','The train leaves at nine.'],
+    ['jegy','ticket','How much is a ticket?'],['szálloda','hotel','We stayed in a nice hotel.'],
+    ['térkép','map','I need a map of London.'],['merre van...?','where is...?','Where is the station?'],
+    ['balra','left','Turn left at the corner.'],['jobbra','right','The shop is on the right.'],
+  ]},
+  { id:'work', emoji:'💼', title:'Munka', words:[
+    ['munka','work / job','I like my job.'],['főnök','boss','My boss is very kind.'],
+    ['fizetés','salary','The salary is good.'],['megbeszélés','meeting','The meeting starts at ten.'],
+    ['határidő','deadline','The deadline is Friday.'],['kolléga','colleague','My colleagues are friendly.'],
+    ['önéletrajz','CV / resume','Send me your CV, please.'],['állásinterjú','job interview','I have a job interview tomorrow.'],
+  ]},
+  { id:'time', emoji:'⏰', title:'Idő és számok', words:[
+    ['ma','today','Today is Monday.'],['holnap','tomorrow','See you tomorrow!'],
+    ['tegnap','yesterday','Yesterday it rained.'],['hét','week','Next week I am free.'],
+    ['óra (időpont)','o\'clock / hour','It is five o\'clock.'],['perc','minute','Wait a minute!'],
+    ['mindig','always','She is always happy.'],['soha','never','I never drink coffee.'],
+  ]},
+];
+const grid = document.getElementById('lesson-grid');
+LESSONS.forEach(l=>{
+  const done = +(localStorage.getItem('au_l_'+l.id)||0);
+  const div = document.createElement('div');
+  div.className='card lesson-card';
+  div.innerHTML = `<div class="emoji">${l.emoji}</div><h2>${l.title}</h2><p>${l.words.length} szó</p>
+    <div class="progressbar"><div style="width:${Math.min(100,done/l.words.length*100)}%"></div></div>`;
+  div.onclick = ()=>openLesson(l);
+  grid.appendChild(div);
+});
+let cur=null, idx=0;
+function openLesson(l){
+  cur=l; idx=0;
+  document.getElementById('lesson-list').classList.add('hidden');
+  document.getElementById('lesson-view').classList.remove('hidden');
+  document.getElementById('lesson-title').textContent = l.emoji+' '+l.title;
+  showCard();
+}
+function closeLesson(){
+  document.getElementById('lesson-view').classList.add('hidden');
+  document.getElementById('lesson-list').classList.remove('hidden');
+}
+function showCard(){
+  const w = cur.words[idx];
+  document.getElementById('flash').classList.remove('flipped');
+  setTimeout(()=>{
+    document.getElementById('flash-front').textContent = w[0];
+    document.getElementById('flash-back').textContent = w[1];
+    document.getElementById('flash-example').textContent = w[2];
+  }, 150);
+  document.getElementById('lesson-pos').textContent = `${idx+1} / ${cur.words.length}`;
+  document.getElementById('lesson-progress').style.width = (idx/cur.words.length*100)+'%';
+}
+function nextCard(knew){
+  if(knew){ addXP(2); localStorage.setItem('au_l_'+cur.id, Math.max(+(localStorage.getItem('au_l_'+cur.id)||0), idx+1)); }
+  idx++;
+  if(idx >= cur.words.length){
+    alert('🎉 Lecke kész! Szép munka!');
+    closeLesson(); location.reload(); return;
+  }
+  showCard();
+}
+
+/* ---------- quiz (10 questions) ---------- */
+const QUIZ = [
+  { type:'mc', q:'Hogyan mondod angolul: „Éhes vagyok”?', hint:'Figyelj: az angolban kell az alany és a létige!',
+    options:['I hungry','I am hungry','Me hungry am','I have hungry'], answer:1,
+    why:'Az angolban mindig kell alany (I) és létige (am): „I am hungry”. A „have hungry” a német/francia mintát követné – az angolban nem jó.' },
+  { type:'mc', q:'Melyik mondat helyes?', hint:'Névelők: mikor NEM kell a „the”?',
+    options:['I love the music.','I love music.','I love a music.','I love musics.'], answer:1,
+    why:'Általánosságban beszélve nincs névelő: „I love music”. A „music” ráadásul megszámlálhatatlan, így többes száma sincs.' },
+  { type:'text', q:'Fordítsd le: „Köszönöm szépen!”', hint:'Két szó is elég.',
+    answers:['thank you','thank you very much','thanks','thank you so much'],
+    why:'„Thank you” vagy „Thank you very much”. A „thanks” lazább, baráti forma.' },
+  { type:'mc', q:'„Ő orvos.” – Melyik helyes, ha egy NŐRŐL beszélünk?', hint:'A magyar „ő” nem árulja el a nemet, az angol igen!',
+    options:['He is a doctor.','She is a doctor.','It is a doctor.','She is doctor.'], answer:1,
+    why:'Nőre: „she”. És figyelj: foglalkozásnál kell az „a” névelő – „She is A doctor”. Ez a két leggyakoribb magyar hiba egy mondatban!' },
+  { type:'mc', q:'Melyik a helyes múlt idő? „Tegnap moziba mentem.”', hint:'A „go” rendhagyó ige!',
+    options:['I goed to the cinema yesterday.','I went to the cinema yesterday.','I have go to cinema yesterday.','Yesterday I going cinema.'], answer:1,
+    why:'A „go” rendhagyó: go → went → gone. Konkrét múltbeli időpontnál (yesterday) Past Simple kell: „went”.' },
+  { type:'text', q:'Írd be angolul: „víz”', hint:'Vigyázz, a magyarban nincs „w” hang!',
+    answers:['water'],
+    why:'„Water” – kiejtése kb. „úótör”. A „w” ajakkerekítéses, mint a magyar „u”, nem „v”!' },
+  { type:'mc', q:'Mit jelent az „actual” angol szó?', hint:'Hamis barát – nem az, aminek látszik!',
+    options:['aktuális','tényleges / valódi','gyors','régi'], answer:1,
+    why:'Hamis barát! „actual” = tényleges. Az „aktuális” angolul „current” vagy „up-to-date”.' },
+  { type:'mc', q:'Válaszd ki a helyes szórendet!', hint:'Angol szórend: Alany + Ige + Tárgy + Hely + Idő',
+    options:['Yesterday bought I bread in the shop.','I bought bread in the shop yesterday.','I in the shop bread bought yesterday.','Bought I yesterday bread in the shop.'], answer:1,
+    why:'Az angol szórend kötött: I (alany) + bought (ige) + bread (tárgy) + in the shop (hely) + yesterday (idő).' },
+  { type:'text', q:'Fordítsd le: „Hol van az állomás?”', hint:'Kérdőszórend: kérdőszó + létige + alany.',
+    answers:['where is the station','where is the station?','where is the train station','where is the train station?'],
+    why:'„Where is the station?” – kérdésnél a létige (is) az alany (the station) ELÉ kerül.' },
+  { type:'mc', q:'Melyik mondat használ helyesen Present Perfectet?', hint:'Ez az igeidő a magyarban nem létezik – az eredmény számít, nem az időpont!',
+    options:['I have seen this film yesterday.','I have seen this film.','I has seen this film.','I seen this film.'], answer:1,
+    why:'„I have seen this film” = láttam már (valamikor, mindegy mikor). Ha kimondod MIKOR (yesterday), akkor Past Simple kell: „I saw it yesterday”.' },
+];
+let qIdx=0, qScore=0;
+function startQuiz(){
+  qIdx=0; qScore=0;
+  document.getElementById('quiz-intro').classList.add('hidden');
+  document.getElementById('quiz-result').classList.add('hidden');
+  document.getElementById('quiz-box').classList.remove('hidden');
+  showQuestion();
+}
+function showQuestion(){
+  const q = QUIZ[qIdx];
+  document.getElementById('quiz-counter').textContent = `Kérdés ${qIdx+1} / ${QUIZ.length}`;
+  document.getElementById('quiz-question').textContent = q.q;
+  document.getElementById('quiz-hint').textContent = '💭 '+q.hint;
+  document.getElementById('quiz-feedback').innerHTML='';
+  document.getElementById('quiz-next').classList.add('hidden');
+  const opts = document.getElementById('quiz-options'); opts.innerHTML='';
+  const tw = document.getElementById('quiz-text-wrap');
+  if(q.type==='mc'){
+    tw.classList.add('hidden');
+    q.options.forEach((o,i)=>{
+      const b=document.createElement('button');
+      b.className='q-option'; b.textContent=o;
+      b.onclick=()=>pickOption(i,b);
+      opts.appendChild(b);
+    });
+  } else {
+    tw.classList.remove('hidden');
+    document.getElementById('quiz-text').value='';
+    document.getElementById('quiz-text').focus();
+  }
+}
+function pickOption(i, btn){
+  const q=QUIZ[qIdx];
+  document.querySelectorAll('.q-option').forEach((b,j)=>{
+    b.disabled=true;
+    if(j===q.answer) b.classList.add('correct');
+  });
+  const ok = i===q.answer;
+  if(!ok) btn.classList.add('wrong');
+  finishQuestion(ok, q.why);
+}
+function checkTextAnswer(){
+  const q=QUIZ[qIdx];
+  const nrm=s=>s.toLowerCase().replace(/[’‘`´]/g,"'").replace(/[.,!?;:"]/g,'').replace(/\s+/g,' ').trim();
+  const v=nrm(document.getElementById('quiz-text').value);
+  const ok=q.answers.some(a=>nrm(a)===v);
+  document.getElementById('quiz-text-wrap').classList.add('hidden');
+  finishQuestion(ok, q.why);
+}
+function finishQuestion(ok, why){
+  if(ok){ qScore++; addXP(10); }
+  document.getElementById('quiz-feedback').innerHTML =
+    `<div class="feedback ${ok?'ok':'no'}">${ok?'✅ Helyes! +10 XP':'❌ Nem talált.'}<br><span style="font-weight:500">${why}</span></div>`;
+  document.getElementById('quiz-next').classList.remove('hidden');
+}
+function nextQuestion(){
+  qIdx++;
+  if(qIdx>=QUIZ.length){ showResult(); return; }
+  showQuestion();
+}
+function showResult(){
+  document.getElementById('quiz-box').classList.add('hidden');
+  const r=document.getElementById('quiz-result');
+  let msg;
+  if(qScore>=9) msg='🏆 Kiváló! Már most nagyon erős az angolod!';
+  else if(qScore>=7) msg='🎉 Nagyon jó! A részleteken múlik csak.';
+  else if(qScore>=5) msg='👍 Jó úton haladsz – nézd át a Tippek oldalt!';
+  else msg='🌱 Minden szakértő kezdőként indult. Kezdd a Leckékkel, aztán próbáld újra!';
+  r.innerHTML=`<div class="big-result"><div class="score">${qScore} / ${QUIZ.length}</div><h2>${msg}</h2>
+    <button class="btn" style="margin-top:14px" onclick="startQuiz()">Újra 🔁</button>
+    <button class="btn blue" style="margin-top:14px" onclick="go('lessons')">Leckékhez 📚</button></div>`;
+  r.classList.remove('hidden');
+}
+
+/* ---------- learning path ---------- */
+const PATH_NODES = ['👋','☕','🛒','🍽️','🗣️','📞','🏠','🚌','🩺','⭐','🧩','📖','💼','🌍','🎬','🧠','✉️','⚖️','🔬','⭐','🎓','📜','🏛️','💡','🖋️','🌐','🔮','🎭','🚀','🏆'];
+/* themed sentence banks: [hungarian, english] – band by level */
+const SENTENCES = [
+/* band 0 · levels 1–5 · daily conversations */ [
+  ['Hogy vagy ma reggel?','How are you this morning?'],
+  ['Mit szeretnél enni ma este vacsorára?','What would you like to eat for dinner tonight?'],
+  ['Bocsánat, meg tudná mondani, mennyi az idő?','Excuse me, could you tell me the time?'],
+  ['Találkozunk holnap délután a kávézóban?','Shall we meet at the cafe tomorrow afternoon?'],
+  ['Kérek egy kávét tejjel és cukor nélkül.','I would like a coffee with milk and no sugar.'],
+  ['Hol van a legközelebbi buszmegálló?','Where is the nearest bus stop?'],
+  ['Nagyon örülök, hogy megismerhetlek.','I am very happy to meet you.'],
+  ['Mennyibe kerül ez a piros pulóver?','How much does this red sweater cost?'],
+  ['Ma este otthon maradok és filmet nézek.','I am staying at home tonight and watching a film.'],
+  ['Segíthetek vinni a nehéz táskádat?','Can I help you carry your heavy bag?'],
+  ['A boltban vettem kenyeret, tejet és almát.','I bought bread, milk and apples at the shop.'],
+  ['Milyen az idő ma nálatok?','What is the weather like at your place today?'],
+  ['Szeretnék asztalt foglalni két főre ma estére.','I would like to book a table for two tonight.'],
+  ['Elnézést a késésért, sok volt a forgalom.','Sorry for being late, there was a lot of traffic.'],
+  ['Hívlak majd, amint hazaérek a munkából.','I will call you as soon as I get home from work.'],
+  ['A hétvégén a családommal kirándulni megyünk.','We are going hiking with my family at the weekend.'],
+  ['Rég nem láttalak, mi újság veled?','I have not seen you for ages, what is new with you?'],
+  ['Hadd mutassam be a legjobb barátomat, Pétert.','Let me introduce my best friend Peter.'],
+  ['Örülök, hogy összefutottunk a piacon!','I am glad we bumped into each other at the market!'],
+  ['Ráérsz péntek este egy közös vacsorára?','Are you free for a dinner together on Friday evening?'],
+  ['Add át üdvözletemet a szüleidnek!','Please give my regards to your parents!'],
+  ['Elejtettem a telefonomat és megrepedt a kijelzője.','I dropped my phone and its screen cracked.'],
+  ['Kiöntöttem a kávét a billentyűzetre reggel.','I spilled coffee on the keyboard this morning.'],
+  ['Lekéstem a buszt, ezért gyalog mentem dolgozni.','I missed the bus, so I walked to work.'],
+  ['Ott hagytam az esernyőmet a vonaton.','I left my umbrella on the train.'],
+  ['Tartsuk a kapcsolatot, itt a telefonszámom!','Let\'s keep in touch, here is my phone number!'],
+],
+/* band 1 · levels 6–10 · less common daily situations */ [
+  ['Sajnos le kell mondanom a holnapi találkozónkat.','Unfortunately I have to cancel our meeting tomorrow.'],
+  ['A csomagom nem érkezett meg a repülőtérre.','My luggage did not arrive at the airport.'],
+  ['Szeretném visszacserélni ezt a cipőt egy nagyobbra.','I would like to exchange these shoes for a bigger size.'],
+  ['A szomszédom megkért, hogy öntözzem a virágait.','My neighbour asked me to water her flowers.'],
+  ['Elromlott a mosógépünk, ki kell hívni a szerelőt.','Our washing machine broke down, we need to call a repairman.'],
+  ['Nem emlékszem, hova tettem a lakáskulcsomat.','I cannot remember where I put my house keys.'],
+  ['Az orvos azt javasolta, hogy pihenjek többet.','The doctor suggested that I should rest more.'],
+  ['Véletlenül rossz vonatra szálltam fel reggel.','I accidentally got on the wrong train this morning.'],
+  ['Kaptam egy meghívót az unokatestvérem esküvőjére.','I received an invitation to my cousin\'s wedding.'],
+  ['A bank értesített, hogy lejárt a kártyám.','The bank informed me that my card has expired.'],
+  ['Túl hangos a zene, nem tudok aludni tőle.','The music is too loud, I cannot sleep because of it.'],
+  ['Foglaltam időpontot a fogorvoshoz jövő keddre.','I booked an appointment with the dentist for next Tuesday.'],
+  ['A főnököm megdicsért a jól sikerült bemutatóért.','My boss praised me for the successful presentation.'],
+  ['Az árak sokat emelkedtek az elmúlt hónapokban.','Prices have risen a lot in the past few months.'],
+  ['Megpróbáltam megjavítani a biciklimet, de nem sikerült.','I tried to fix my bike but I did not succeed.'],
+  ['A recepción hagytam üzenetet a kollégádnak.','I left a message for your colleague at the reception.'],
+  ['Kisebb baleset történt a sarkon, de senki sem sérült meg.','There was a minor accident at the corner, but nobody got hurt.'],
+  ['Áramszünet volt tegnap este az egész utcában.','There was a power cut in the whole street last night.'],
+  ['Bezártam magam a lakásból, a szomszédnál van pótkulcs.','I locked myself out of the flat, the neighbour has a spare key.'],
+  ['Összefutottam egy régi osztálytársammal a repülőtéren.','I ran into an old classmate at the airport.'],
+  ['A találkozót átszerveztük egy csendesebb kávézóba.','We moved the meetup to a quieter cafe.'],
+  ['Ellopták a biciklimet, pedig le volt lakatolva.','My bike was stolen even though it was locked.'],
+  ['Beázott a plafon a fürdőszobában a vihar után.','The ceiling in the bathroom leaked after the storm.'],
+  ['Rossz címre küldtem a csomagot, vissza kell kérnem.','I sent the parcel to the wrong address, I have to ask for it back.'],
+  ['A szervezők az utolsó pillanatban lemondták a koncertet.','The organisers cancelled the concert at the last minute.'],
+  ['Megismerkedtem valakivel egy nyelvtanuló klubban.','I met someone at a language learning club.'],
+  ['Elfelejtettem köszönni a főnökömnek a folyosón.','I forgot to greet my boss in the corridor.'],
+],
+/* band 2 · levels 11–20 · complex sentences */ [
+  ['Ha tudtam volna a dugóról, korábban indultam volna el.','If I had known about the traffic jam, I would have left earlier.'],
+  ['Annak ellenére, hogy fáradt volt, befejezte a munkát.','Despite being tired, he finished the work.'],
+  ['A jelentést, amit tegnap küldtem, még senki sem olvasta el.','Nobody has read the report that I sent yesterday.'],
+  ['Minél többet gyakorolsz, annál magabiztosabb leszel.','The more you practise, the more confident you will become.'],
+  ['Azt mondta, hogy soha nem járt még külföldön.','She said that she had never been abroad before.'],
+  ['A találkozót a jövő hétre halasztották a betegsége miatt.','The meeting was postponed until next week because of his illness.'],
+  ['Nem vagyok hozzászokva ahhoz, hogy ilyen korán keljek.','I am not used to getting up this early.'],
+  ['Bárcsak több időm lenne a hobbijaimra!','I wish I had more time for my hobbies.'],
+  ['A ház, amelyben felnőttem, már nem létezik.','The house in which I grew up no longer exists.'],
+  ['Ahelyett, hogy panaszkodna, inkább megoldást keres.','Instead of complaining, he looks for a solution.'],
+  ['Alig szálltunk fel a vonatra, amikor eleredt az eső.','We had hardly got on the train when it started to rain.'],
+  ['Érdemes lenne megfontolni egy új számítógép vásárlását.','It would be worth considering buying a new computer.'],
+  ['Minden bizonnyal elfelejtette, hogy ma találkozunk.','He must have forgotten that we are meeting today.'],
+  ['A szerződést alaposan át kell nézni aláírás előtt.','The contract must be reviewed carefully before signing.'],
+  ['Attól tartok, hogy a projekt nem készül el határidőre.','I am afraid that the project will not be finished by the deadline.'],
+  ['Úgy tűnik, hogy a helyzet lassan javulni kezd.','It seems that the situation is slowly starting to improve.'],
+  ['Épp indulni készültem, amikor bekopogott egy régi barátom.','I was just about to leave when an old friend knocked on the door.'],
+  ['Ha nem ismertem volna fel a hangját, elmentem volna mellette.','If I had not recognised his voice, I would have walked past him.'],
+  ['A baleset miatt órákig állt a forgalom az autópályán.','Traffic was at a standstill on the motorway for hours because of the accident.'],
+  ['Kiderült, hogy ugyanabba az iskolába jártunk gyerekkorunkban.','It turned out that we had gone to the same school as children.'],
+  ['Annyira belemerültünk a beszélgetésbe, hogy lekéstük az utolsó vonatot.','We got so absorbed in the conversation that we missed the last train.'],
+  ['A tanúk szerint a sofőr nem vette észre a piros lámpát.','According to the witnesses, the driver did not notice the red light.'],
+  ['Alig ismertem meg, annyira megváltozott az évek alatt.','I hardly recognised her, she had changed so much over the years.'],
+  ['Ígéretet tett, hogy legközelebb időben érkezik a találkozóra.','He promised that he would arrive at the meetup on time next time.'],
+  ['A biztosító megtérítette a vihar okozta károkat.','The insurance company covered the damage caused by the storm.'],
+  ['Bármennyire is siettem, a bemutató már elkezdődött, mire odaértem.','No matter how much I hurried, the presentation had already started by the time I got there.'],
+  ['A félreértés abból adódott, hogy két Kovács is dolgozik nálunk.','The misunderstanding arose because two people called Kovács work at our company.'],
+],
+/* band 3 · levels 21–30 · advanced */ [
+  ['Ha nem lett volna a segítséged, kudarcot vallottam volna.','But for your help, I would have failed.'],
+  ['Csak miután elolvastam a levelet, értettem meg a helyzetet.','Only after reading the letter did I understand the situation.'],
+  ['A vádlott tagadta, hogy bármi köze lenne az ügyhöz.','The defendant denied having anything to do with the case.'],
+  ['Bármilyen furcsán hangzik is, az eredmények pontosak voltak.','Strange as it may sound, the results were accurate.'],
+  ['A javaslatot az igazgatótanács egyhangúlag elutasította.','The proposal was unanimously rejected by the board of directors.'],
+  ['Inkább lemondana, mintsem hogy elfogadja ezeket a feltételeket.','He would sooner resign than accept these terms.'],
+  ['A kutatás rávilágított a probléma eddig ismeretlen okaira.','The research shed light on previously unknown causes of the problem.'],
+  ['Semmilyen körülmények között nem szabad megosztani a jelszavadat.','Under no circumstances should you share your password.'],
+  ['Az új szabályozás messzemenő következményekkel járhat a piacra nézve.','The new regulation may have far-reaching consequences for the market.'],
+  ['Utólag visszagondolva másképp kellett volna kezelnem a helyzetet.','In hindsight, I should have handled the situation differently.'],
+  ['A tanúvallomások ellentmondanak egymásnak a történtekkel kapcsolatban.','The testimonies contradict each other regarding what happened.'],
+  ['Aligha lehet túlbecsülni ennek a felfedezésnek a jelentőségét.','The significance of this discovery can hardly be overstated.'],
+  ['A tárgyalások holtpontra jutottak a felek makacssága miatt.','The negotiations reached a deadlock due to the stubbornness of the parties.'],
+  ['Feltéve, hogy minden a terv szerint halad, jövőre nyitunk.','Provided that everything goes according to plan, we will open next year.'],
+]];
+const MOTIVATION = [
+  'Ne add fel! Minden hiba egy lépés a folyékony angol felé. 💪',
+  'A nyelvtanulás maraton, nem sprint – holnap újra menni fog! 🏃',
+  'Tudtad? Aki hibázik, az tanul. Aki nem próbálkozik, az nem. 🌱',
+  'Már az is siker, hogy idáig eljutottál. Nézd át a hibáidat, és vágj bele újra! 🔁',
+  'A legjobb angolosok is elbuktak ezerszer. A különbség: ők újra próbálták. ⭐',
+  'Egy rossz teszt nem rossz tanulót jelent – csak egy jó gyakorlási lehetőséget. 🎯',
+];
+const pathState = {
+  get lvl(){ return +(localStorage.getItem('au_pathLvl')||0) },
+  set lvl(v){ localStorage.setItem('au_pathLvl', v) },
+  get acc(){ return +(localStorage.getItem('au_pathAcc')||0.7) },
+  set acc(v){ localStorage.setItem('au_pathAcc', v) },
+};
+const rnd = a => a[Math.floor(Math.random()*a.length)];
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
+
+function renderPath(){
+  const wrap=document.getElementById('path-nodes'); wrap.innerHTML='';
+  PATH_NODES.forEach((emo,i)=>{
+    const d=document.createElement('div'); d.className='node-wrap';
+    const b=document.createElement('button');
+    const done=i<pathState.lvl, curr=i===pathState.lvl;
+    b.className='node '+(done?'done':curr?'current':i>pathState.lvl?'locked':'');
+    b.textContent = done?'✅':i>pathState.lvl?'🔒':emo;
+    b.disabled = i>pathState.lvl;
+    b.onclick = ()=>startSession(i);
+    const l=document.createElement('div'); l.className='node-label';
+    l.textContent = 'Szint '+(i+1)+(done?' ✓':'');
+    d.append(b,l); wrap.appendChild(d);
+  });
+}
+renderPath();
+
+/* random question generation, themed by band, heavy on word-order games */
+function bandFor(lvl){ return lvl<5?0 : lvl<10?1 : lvl<20?2 : 3; }
+function genOne(nodeLvl){
+  let band = bandFor(nodeLvl);
+  if(pathState.acc < 0.5) band = Math.max(0, band-1);   // struggling → easier band
+  else if(pathState.acc > 0.85) band = Math.min(3, band+1); // cruising → harder band
+  const bank = SENTENCES[band];
+  const wordPool = LESSONS.flatMap(l=>l.words);
+  // weighted mix: ~50% scramble, 20% pick-the-translation, 15% blank, 15% vocab
+  const roll = Math.random();
+  const s = rnd(bank);
+  if(roll < 0.5){ // sentence scramble
+    const words = s[1].replace(/[.!?,]/g,'').split(' ');
+    return {type:'scramble', q:'Rakd helyes sorrendbe a mondatot!', sub:'🇭🇺 '+s[0],
+      words:shuffle(words), correct:words.join(' '), correctText:s[1]};
+  } else if(roll < 0.7){ // pick the correct translation
+    const others = shuffle(bank.filter(o=>o!==s)).slice(0,3);
+    const opts = shuffle([s,...others].map(o=>o[1]));
+    return {type:'mc', q:`Melyik a helyes fordítása? „${s[0]}”`,
+      options:opts, answer:opts.indexOf(s[1]), correctText:s[1]};
+  } else if(roll < 0.85){ // fill the blank in a sentence
+    const words = s[1].replace(/[.!?,]/g,'').split(' ').filter(w=>w.length>3);
+    const target = rnd(words);
+    const rx = new RegExp('\\b'+target.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b');
+    return {type:'text', q:'Egészítsd ki: '+s[1].replace(rx,'_____'), sub:'🇭🇺 '+s[0]+' · (csak a hiányzó szót írd be)',
+      answers:[target, s[1]], correctText:s[1]};
+  } else { // vocab typing
+    const w = rnd(wordPool);
+    return {type:'text', q:`Írd be angolul: „${w[0].split(' / ')[0]}”`, sub:'💡 Kisbetű/nagybetű nem számít.',
+      answers:w[1].split(' / ').map(x=>x.toLowerCase()), correctText:w[1]};
+  }
+}
+function genQuestions(nodeLvl){
+  const qs=[], seen=new Set();
+  let guard=0;
+  while(qs.length<10 && guard++<200){
+    const q=genOne(nodeLvl);
+    if(seen.has(q.correctText)) continue;
+    seen.add(q.correctText); qs.push(q);
+  }
+  return qs;
+}
+
+let psQs=[], psIdx=0, psCorrect=0, psErrors=[], psNode=0, psEndless=false, psHearts=3;
+function startSession(node){
+  psNode=node; psEndless=false; psQs=genQuestions(node); psIdx=0; psCorrect=0; psErrors=[];
+  document.getElementById('path-map').classList.add('hidden');
+  document.getElementById('path-result').classList.add('hidden');
+  document.getElementById('path-session').classList.remove('hidden');
+  showPsQuestion();
+}
+function startEndless(){
+  psEndless=true; psHearts=3; psIdx=0; psCorrect=0; psErrors=[];
+  psQs=[genOne(0)];
+  document.getElementById('path-map').classList.add('hidden');
+  document.getElementById('path-result').classList.add('hidden');
+  document.getElementById('path-session').classList.remove('hidden');
+  showPsQuestion();
+}
+function quitSession(){
+  document.getElementById('path-session').classList.add('hidden');
+  document.getElementById('path-map').classList.remove('hidden');
+}
+function showPsQuestion(){
+  const q=psQs[psIdx];
+  document.getElementById('ps-counter').textContent = psEndless
+    ? `♾️ Végtelen · ${psIdx+1}. kérdés · ${'❤️'.repeat(psHearts)}${'🖤'.repeat(3-psHearts)}`
+    : `Szint ${psNode+1} · Kérdés ${psIdx+1} / ${psQs.length}`;
+  document.getElementById('ps-progress').style.width = psEndless ? '100%' : (psIdx/psQs.length*100)+'%';
+  document.getElementById('ps-question').textContent=q.q;
+  document.getElementById('ps-sub').textContent=q.sub||'';
+  document.getElementById('ps-feedback').innerHTML='';
+  document.getElementById('ps-next').classList.add('hidden');
+  const opts=document.getElementById('ps-options'); opts.innerHTML='';
+  document.getElementById('ps-scramble').classList.add('hidden');
+  document.getElementById('ps-text-wrap').classList.add('hidden');
+  if(q.type==='mc'){
+    q.options.forEach((o,i)=>{
+      const b=document.createElement('button'); b.className='q-option'; b.textContent=o;
+      b.onclick=()=>{
+        document.querySelectorAll('#ps-options .q-option').forEach((x,j)=>{x.disabled=true; if(j===q.answer)x.classList.add('correct');});
+        if(i!==q.answer)b.classList.add('wrong');
+        psAnswer(i===q.answer, o);
+      };
+      opts.appendChild(b);
+    });
+  } else if(q.type==='scramble'){
+    document.getElementById('ps-scramble').classList.remove('hidden');
+    const bank=document.getElementById('ps-word-bank'), row=document.getElementById('ps-answer-row');
+    bank.innerHTML=''; row.innerHTML='';
+    q.words.forEach(w=>{
+      const c=document.createElement('button'); c.className='chip'; c.textContent=w;
+      c.onclick=()=>{ (c.parentElement===bank?row:bank).appendChild(c); };
+      bank.appendChild(c);
+    });
+  } else {
+    document.getElementById('ps-text-wrap').classList.remove('hidden');
+    const t=document.getElementById('ps-text'); t.value=''; t.disabled=false; t.focus();
+  }
+}
+/* forgiving comparison: case, punctuation, curly quotes and extra spaces never count as errors */
+function norm(s){
+  return s.toLowerCase().replace(/[’‘`´]/g,"'").replace(/[.,!?;:"]/g,'').replace(/\s+/g,' ').trim();
+}
+function checkScramble(){
+  const q=psQs[psIdx];
+  const given=[...document.getElementById('ps-answer-row').children].map(c=>c.textContent).join(' ');
+  psAnswer(norm(given)===norm(q.correct), given||'(üres)');
+}
+function checkPathText(){
+  const q=psQs[psIdx];
+  const t=document.getElementById('ps-text');
+  if(t.disabled) return; // already answered – don't double-count
+  t.disabled=true;
+  const v=norm(t.value);
+  psAnswer(q.answers.some(a=>norm(a)===v), t.value.trim()||'(üres)');
+}
+document.getElementById('ps-text').addEventListener('keydown',e=>{ if(e.key==='Enter') checkPathText(); });
+function psAnswer(ok, given){
+  const q=psQs[psIdx];
+  if(ok){ psCorrect++; addXP(5); }
+  else { psErrors.push({q:q.q, given, correct:q.correctText}); if(psEndless) psHearts--; }
+  document.getElementById('ps-scramble').classList.add('hidden');
+  document.getElementById('ps-text-wrap').classList.add('hidden');
+  document.getElementById('ps-feedback').innerHTML=
+    `<div class="feedback ${ok?'ok':'no'}">${ok?'✅ Helyes! +5 XP':'❌ Helyes válasz: '+q.correctText}</div>`;
+  document.getElementById('ps-next').classList.remove('hidden');
+}
+function psNext(){
+  psIdx++;
+  if(psEndless){
+    if(psHearts<=0){ endEndless(); return; }
+    // difficulty ramps: +1 path level every 2 questions (caps at level 30)
+    psQs.push(genOne(Math.min(29, Math.floor(psIdx/2))));
+    showPsQuestion(); return;
+  }
+  if(psIdx>=psQs.length){ endSession(); return; }
+  showPsQuestion();
+}
+function endEndless(){
+  const best = Math.max(psCorrect, +(localStorage.getItem('au_endlessBest')||0));
+  localStorage.setItem('au_endlessBest', best);
+  document.getElementById('path-session').classList.add('hidden');
+  const r=document.getElementById('path-result');
+  const errHtml = psErrors.length ? `<h3 style="margin-top:18px">📋 Ezeket rontottad el:</h3>`+
+    psErrors.map(e=>`<div class="err-item"><b>${e.q}</b><br>Te: <span class="bad">${e.given}</span><br>Helyesen: <span class="good">${e.correct}</span></div>`).join('') : '';
+  r.innerHTML = `<div class="card big-result">
+    <div class="score" style="color:var(--gold)">♾️ ${psCorrect}</div>
+    <h2>helyes válasz, mielőtt elfogytak az életeid!</h2>
+    <p class="lead">🏅 Rekordod: <b>${best}</b></p>
+    <div class="motiv">${rnd(MOTIVATION)}</div>
+    ${errHtml}
+    <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn" onclick="startEndless()">Újra ♾️</button>
+      <button class="btn blue" onclick="backToPath()">Vissza az úthoz 🛤️</button>
+    </div></div>`;
+  r.classList.remove('hidden');
+}
+function endSession(){
+  const ratio=psCorrect/psQs.length, passed=ratio>=0.7;
+  pathState.acc = pathState.acc*0.6 + ratio*0.4; // rolling accuracy → adapts future difficulty
+  if(passed && psNode===pathState.lvl){ pathState.lvl=pathState.lvl+1; addXP(20); }
+  document.getElementById('path-session').classList.add('hidden');
+  const r=document.getElementById('path-result');
+  const errHtml = psErrors.length ? `<h3 style="margin-top:18px">📋 Ezeket rontottad el:</h3>`+
+    psErrors.map(e=>`<div class="err-item"><b>${e.q}</b><br>Te: <span class="bad">${e.given}</span><br>Helyesen: <span class="good">${e.correct}</span></div>`).join('') : '';
+  r.innerHTML = `<div class="card big-result">
+    <div class="score" style="color:${passed?'var(--green)':'var(--red)'}">${psCorrect} / ${psQs.length}</div>
+    <h2>${passed?'🎉 Szint teljesítve! +20 XP bónusz':'😔 Ezúttal nem sikerült (70% kell)'}</h2>
+    ${passed?'':'<div class="motiv">'+rnd(MOTIVATION)+'</div>'}
+    ${errHtml}
+    <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      ${passed?'':'<button class="btn" onclick="startSession('+psNode+')">Újrapróbálom 💪</button>'}
+      <button class="btn ${passed?'':'blue'}" onclick="backToPath()">Vissza az úthoz 🛤️</button>
+    </div></div>`;
+  r.classList.remove('hidden');
+}
+function backToPath(){
+  document.getElementById('path-result').classList.add('hidden');
+  document.getElementById('path-map').classList.remove('hidden');
+  renderPath();
+}
+
+/* ---------- CEFR placement test (50 questions) ---------- */
+const CEFR = [
+/* A1 */
+{l:'A1', q:'„___ name is Anna.”', o:['My','I','Me','Mine'], a:0},
+{l:'A1', q:'„She ___ a teacher.”', o:['are','is','am','be'], a:1},
+{l:'A1', q:'Mi a „child” többes száma?', o:['childs','childes','children','childrens'], a:2},
+{l:'A1', q:'„I ___ from Hungary.”', o:['is','be','are','am'], a:3},
+{l:'A1', q:'„___ you like coffee?”', o:['Do','Does','Are','Is'], a:0},
+{l:'A1', q:'Mi a „big” ellentéte?', o:['tall','small','long','old'], a:1},
+{l:'A1', q:'„We ___ two cats.”', o:['has','haves','have','are'], a:2},
+{l:'A1', q:'Mit jelent angolul: „könyv”?', o:['look','box','cook','book'], a:3},
+{l:'A1', q:'„It is seven o\'clock ___ the morning.”', o:['in','at','on','by'], a:0},
+/* A2 */
+{l:'A2', q:'„Yesterday I ___ to the market.”', o:['go','goed','went','gone'], a:2},
+{l:'A2', q:'„She is ___ than her brother.”', o:['tall','more tall','tallest','taller'], a:3},
+{l:'A2', q:'„I have lived here ___ 2019.”', o:['since','for','from','at'], a:0},
+{l:'A2', q:'„You ___ smoke here. It is forbidden.”', o:['don\'t have to','mustn\'t','shouldn\'t to','not can'], a:1},
+{l:'A2', q:'„There isn\'t ___ milk in the fridge.”', o:['some','a','any','no'], a:2},
+{l:'A2', q:'„He plays football ___ Saturdays.”', o:['in','at','by','on'], a:3},
+{l:'A2', q:'Mi a „good” középfoka?', o:['better','gooder','more good','best'], a:0},
+{l:'A2', q:'Melyik mondat helyes?', o:['She doesn\'t likes tea.','She doesn\'t like tea.','She don\'t likes tea.','She not like tea.'], a:1},
+{l:'A2', q:'„I\'m going ___ a doctor when I grow up.”', o:['being','be','to be','been'], a:2},
+/* B1 */
+{l:'B1', q:'„If it rains, we ___ at home.”', o:['stayed','would stayed','will stay','staying'], a:2},
+{l:'B1', q:'„The film ___ by a famous director.”', o:['directed','was directed','has directed','directing'], a:1},
+{l:'B1', q:'„I\'ve been learning English ___ five years.”', o:['for','since','during','from'], a:0},
+{l:'B1', q:'„She asked me where ___.”', o:['do I live','I live','did I live','I lived'], a:3},
+{l:'B1', q:'Mit jelent a „give up”?', o:['felad / abbahagy','felemel','odaad','kinyit'], a:0},
+{l:'B1', q:'„He\'s used ___ up early.”', o:['to get','getting','to getting','get'], a:2},
+{l:'B1', q:'„You ___ have seen him yesterday – he\'s abroad.”', o:['mustn\'t','can\'t','shouldn\'t','may not'], a:1},
+{l:'B1', q:'„It was ___ a good film that I watched it twice.”', o:['so','very','too','such'], a:3},
+{l:'B1', q:'„Despite ___ hard, he failed the exam.”', o:['working','he worked','of working','to work'], a:0},
+/* B2 */
+{l:'B2', q:'„Hardly ___ arrived when the phone rang.”', o:['I had','had I','I have','did I'], a:1},
+{l:'B2', q:'„I wish I ___ more time.”', o:['have','would have','had','will have'], a:2},
+{l:'B2', q:'„The report needs ___ by Friday.”', o:['finish','finishing to','to finish','to be finished'], a:3},
+{l:'B2', q:'Mit jelent a „run out of”?', o:['elfogy (valamije)','kifut valahonnan','elkerül','túlfut'], a:0},
+{l:'B2', q:'„If I ___ you, I would apologize.”', o:['am','was being','were','be'], a:2},
+{l:'B2', q:'„He denied ___ the money.”', o:['stealing','to steal','steal','to stealing'], a:0},
+{l:'B2', q:'„___ the bad weather, the match went ahead.”', o:['Although','Despite','However','Even'], a:1},
+{l:'B2', q:'„By next year, she ___ here for a decade.”', o:['will work','works','is working','will have worked'], a:3},
+{l:'B2', q:'Melyik szó illik? „heavy ___”', o:['sunshine','rain','breeze','warmth'], a:1},
+/* C1 */
+{l:'C1', q:'„Not only ___ late, but he also forgot the documents.”', o:['he was','was he','he is','being he'], a:1},
+{l:'C1', q:'„The proposal was turned ___ by the board.”', o:['off','out','down','over'], a:2},
+{l:'C1', q:'Mit jelent: „a blessing in disguise”?', o:['álruhás szent','rejtett áldás – ami rossznak tűnt, de jó lett','ünnepi áldás','kétes ajándék'], a:1},
+{l:'C1', q:'„Scarcely had she left ___ it started to rain.”', o:['when','than','that','as'], a:0},
+{l:'C1', q:'„He was ___ with fraud.”', o:['accused','blamed','arrested','charged'], a:3},
+{l:'C1', q:'„But for your help, I ___.”', o:['would fail','had failed','would have failed','will have failed'], a:2},
+{l:'C1', q:'Egészítsd ki az idiómát: „to beat around the ___”', o:['bush','tree','corner','fence'], a:0},
+{l:'C1', q:'„The suspect is alleged ___ the building at midnight.”', o:['entering','to have entered','that entered','having entering'], a:1},
+/* C2 */
+{l:'C2', q:'„___ as it may seem, the results were accurate.”', o:['Strange','Strangely','However','Despite'], a:0},
+{l:'C2', q:'Melyik áll legközelebb az „obsequious” jelentéséhez?', o:['makacs','talpnyaló / szolgalelkű','figyelmetlen','nagyképű'], a:1},
+{l:'C2', q:'„He would sooner resign ___ accept those terms.”', o:['as','that','to','than'], a:3},
+{l:'C2', q:'Melyik ige illik? „to ___ havoc”', o:['wreak','commit','perform','inflict'], a:0},
+{l:'C2', q:'„Were it not for the subsidies, the firm ___ long ago.”', o:['collapsed','would collapse','would have collapsed','had collapsed'], a:2},
+{l:'C2', q:'Mit jelent a „tacit” (pl. tacit agreement)?', o:['írásos','hallgatólagos / kimondatlan','ideiglenes','kötelező'], a:1},
+];
+const CEFR_DESC = {
+  'A1':'🌱 Kezdő – ismered az alapokat: bemutatkozás, egyszerű mondatok. A Tanulási út 1–5. szintje neked való!',
+  'A2':'🌿 Alapfok – boldogulsz hétköznapi helyzetekben. Gyakorolj a 6–10. szinteken!',
+  'B1':'🌳 Középfok alsó – önállóan kommunikálsz a legtöbb helyzetben. Irány a 11–20. szint!',
+  'B2':'🎯 Középfok – árnyaltan fejezed ki magad, ez a magyar emelt érettségi / nyelvvizsga szintje. A 21–30. szintek várnak!',
+  'C1':'🏆 Felsőfok – folyékonyan és pontosan használod a nyelvet. Már csak csiszolni kell!',
+  'C2':'👑 Mesterfok – gyakorlatilag anyanyelvi szint. Le a kalappal!',
+};
+let tIdx=0, tAnswers=[];
+function startPlacement(){
+  tIdx=0; tAnswers=[];
+  document.getElementById('test-intro').classList.add('hidden');
+  document.getElementById('test-result').classList.add('hidden');
+  document.getElementById('test-box').classList.remove('hidden');
+  showTestQ();
+}
+function showTestQ(){
+  const q=CEFR[tIdx];
+  document.getElementById('test-counter').textContent=`Kérdés ${tIdx+1} / ${CEFR.length}`;
+  document.getElementById('test-band').textContent='Nehézség: '+q.l;
+  document.getElementById('test-progress').style.width=(tIdx/CEFR.length*100)+'%';
+  document.getElementById('test-question').textContent=q.q;
+  const opts=document.getElementById('test-options'); opts.innerHTML='';
+  q.o.forEach((o,i)=>{
+    const b=document.createElement('button'); b.className='q-option'; b.textContent=o;
+    b.onclick=()=>{
+      tAnswers.push(i); tIdx++;
+      if(tIdx>=CEFR.length) showTestResult(); else showTestQ();
+    };
+    opts.appendChild(b);
+  });
+}
+function showTestResult(){
+  document.getElementById('test-box').classList.add('hidden');
+  const bands=['A1','A2','B1','B2','C1','C2'];
+  const stats={}; bands.forEach(b=>stats[b]={ok:0,total:0});
+  const errors=[];
+  CEFR.forEach((q,i)=>{
+    stats[q.l].total++;
+    if(tAnswers[i]===q.a) stats[q.l].ok++;
+    else errors.push({q:q.q+' ('+q.l+')', given:q.o[tAnswers[i]], correct:q.o[q.a]});
+  });
+  // level = highest band with ≥55% while all previous bands also passed
+  let level='A1 alatt';
+  for(const b of bands){
+    if(stats[b].ok/stats[b].total>=0.55) level=b; else break;
+  }
+  const totalOk=tAnswers.filter((a,i)=>a===CEFR[i].a).length;
+  addXP(totalOk*2);
+  const breakdown=bands.map(b=>`<span class="pill">${b}: ${stats[b].ok}/${stats[b].total}</span>`).join(' ');
+  const errHtml=errors.length?`<h3 style="margin-top:18px">📋 Hibáid (${errors.length} db):</h3>`+
+    errors.map(e=>`<div class="err-item"><b>${e.q}</b><br>Te: <span class="bad">${e.given||'(nincs válasz)'}</span><br>Helyesen: <span class="good">${e.correct}</span></div>`).join(''):'<p class="lead">Hibátlan! 🤯</p>';
+  const r=document.getElementById('test-result');
+  r.innerHTML=`<div class="card big-result">
+    <p class="lead">A becsült angol szinted:</p>
+    <div class="score">${level}</div>
+    <h2>${CEFR_DESC[level]||'Kezdd az alapoknál – a Leckék és az út 1. szintje segít felépíteni a tudást! 🌱'}</h2>
+    <p class="lead" style="margin-top:10px">Összesen: <b>${totalOk} / ${CEFR.length}</b> helyes (+${totalOk*2} XP)</p>
+    <p style="margin:10px 0">${breakdown}</p>
+    <div style="text-align:left">${errHtml}</div>
+    <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn" onclick="startPlacement()">Újra 🔁</button>
+      <button class="btn blue" onclick="go('path')">Tanulási úthoz 🛤️</button>
+    </div></div>`;
+  r.classList.remove('hidden');
+}
+
+/* ---------- translator ---------- */
+const HU_CHARS=/[áéíóöőúüű]/i;
+const HU_WORDS=/\b(és|hogy|nem|van|egy|az|ez|meg|is|de|mit|hol|már|csak|volt|lesz|vagyok|szia|igen|köszönöm)\b/i;
+const EN_WORDS=/\b(the|and|is|are|you|have|this|that|with|for|not|what|where|hello|thanks|was|will)\b/i;
+function detectLang(t){
+  let hu=0, en=0;
+  if(HU_CHARS.test(t)) hu+=2;
+  hu += (t.match(new RegExp(HU_WORDS.source,'gi'))||[]).length;
+  en += (t.match(new RegExp(EN_WORDS.source,'gi'))||[]).length;
+  return hu>=en ? 'hu' : 'en';
+}
+async function translateText(){
+  const input=document.getElementById('trans-in').value.trim();
+  const status=document.getElementById('trans-status');
+  if(!input){ status.textContent='⚠️ Előbb írj be szöveget vagy tölts fel fájlt!'; return; }
+  const src=detectLang(input), tgt=src==='hu'?'en':'hu';
+  document.getElementById('detected-lang').textContent = src==='hu'?'🇭🇺 magyar':'🇬🇧 angol';
+  document.getElementById('target-lang').textContent = tgt==='hu'?'🇭🇺 magyar':'🇬🇧 angol';
+  status.textContent='⏳ Fordítás folyamatban...';
+  const out=document.getElementById('trans-out'); out.value='';
+  try{
+    // MyMemory free API translates max ~500 chars per request → split by sentences
+    const chunks=[]; let buf='';
+    for(const part of input.split(/(?<=[.!?\n])\s*/)){
+      if((buf+part).length>450){ if(buf) chunks.push(buf); buf=part; } else buf+=(buf?' ':'')+part;
+    }
+    if(buf) chunks.push(buf);
+    const results=[];
+    for(const c of chunks){
+      const res=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(c)}&langpair=${src}|${tgt}`);
+      const data=await res.json();
+      if(data.responseStatus!==200) throw new Error(data.responseDetails||'API hiba');
+      results.push(data.responseData.translatedText);
+    }
+    out.value=results.join(' ');
+    status.textContent='✅ Kész! (A gépi fordítás nem tökéletes – mindig ellenőrizd.)';
+  }catch(e){
+    status.textContent='❌ Hiba a fordításnál: '+e.message+' (Van internetkapcsolat? A napi ingyenes keret is elfogyhatott.)';
+  }
+}
+function exportTranslation(){
+  const t=document.getElementById('trans-out').value;
+  if(!t){ document.getElementById('trans-status').textContent='⚠️ Nincs mit exportálni – előbb fordíts!'; return; }
+  const blob=new Blob([t],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='forditas.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+/* file import */
+const dz=document.getElementById('dropzone'), fi=document.getElementById('file-input');
+dz.onclick=()=>fi.click();
+dz.ondragover=e=>{e.preventDefault();dz.classList.add('drag')};
+dz.ondragleave=()=>dz.classList.remove('drag');
+dz.ondrop=e=>{e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0]);};
+fi.onchange=()=>{ if(fi.files[0]) loadFile(fi.files[0]); };
+function loadFile(f){
+  if(!f.name.toLowerCase().endsWith('.txt') && f.type!=='text/plain'){
+    document.getElementById('trans-status').textContent='⚠️ Csak .txt fájlt tudok beolvasni.'; return;
+  }
+  const r=new FileReader();
+  r.onload=()=>{ document.getElementById('trans-in').value=r.result; translateText(); };
+  r.readAsText(f,'utf-8');
+}
+</script>
+</body>
+</html>
