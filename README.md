@@ -10,12 +10,5 @@ Ingyenes, egyfájlos weboldal magyaroknak, akik angolul tanulnak. Nincs build, n
 - ⭐ XP és 🔥 napi sorozat, localStorage-ban mentve (nincs regisztráció)
 - 📱 Reszponzív: mobilon, tableten, gépen is jól néz ki, világos + sötét mód
 
-## Hosztolás GitHub Pages-en (ingyenes, megosztható link)
-1. Hozz létre egy új repót a GitHubon (pl. `angol-tanulas`), legyen **Public**.
-2. Töltsd fel az `index.html`-t és ezt a README-t (a repo főoldalán „Add file → Upload files”).
-3. A repóban: **Settings → Pages → Branch: `main` → Save**.
-4. Pár perc múlva élni fog itt: `https://<felhasznaloneved>.github.io/angol-tanulas/`
-5. Ezt a linket bárkinek elküldheted – böngészőből azonnal használható, telepítés nélkül.
-
 ## Megjegyzés
 A fordító a MyMemory ingyenes API-t használja (napi limit van rajta, és internetkapcsolat kell hozzá). Minden más funkció offline is működik.
