@@ -1033,7 +1033,7 @@ function openPdf(m){
   document.getElementById('mat-list').classList.add('hidden');
   document.getElementById('mat-view').classList.remove('hidden');
   document.getElementById('pdf-title').textContent=m.t;
-  const url='pdfs/'+m.f;
+  const url=m.f;
   document.getElementById('pdf-frame').src=url;
   document.getElementById('pdf-open').href=url;
   const dl=document.getElementById('pdf-download'); dl.href=url; dl.download=m.f;
