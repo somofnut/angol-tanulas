@@ -23,6 +23,7 @@
 html{font-size:var(--fs)}
 body{font-family:'Nunito','Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;padding-bottom:70px;-webkit-text-size-adjust:100%;transition:background .2s,color .2s}
 header{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--border);box-shadow:var(--shadow);padding-top:env(safe-area-inset-top)}
+.hamburger{display:none}
 .topbar{max-width:960px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;gap:10px}
 .logo{font-size:1.3rem;font-weight:900;white-space:nowrap}
 .logo span{color:var(--green)}
@@ -31,12 +32,17 @@ header{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px
 .stats .xp{color:var(--gold)} .stats .streak{color:var(--red)}
 .icon-btn{border:none;background:var(--bg);border:1px solid var(--border);width:38px;height:38px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;flex-shrink:0}
 .icon-btn:hover{border-color:var(--blue);transform:translateY(-1px)}
-nav{display:flex;gap:6px;max-width:960px;margin:auto;padding:0 12px 10px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
-nav::-webkit-scrollbar{height:5px}
-nav::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px}
+nav{display:flex;gap:6px;max-width:960px;margin:auto;padding:0 12px 10px;flex-wrap:nowrap;justify-content:center}
 nav button{border:none;background:transparent;color:var(--muted);font-weight:800;font-size:.92rem;padding:8px 14px;border-radius:999px;cursor:pointer;transition:.15s;white-space:nowrap;flex-shrink:0}
 nav button:hover{background:var(--bg)}
 nav button.active{background:var(--green);color:#fff}
+/* hamburger dropdown when tabs would reach the edge */
+@media(max-width:1000px){
+  .hamburger{display:flex}
+  #nav{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;background:var(--card);border-bottom:1px solid var(--border);box-shadow:var(--shadow);padding:8px 10px;max-width:none;gap:2px;z-index:20;max-height:80vh;overflow-y:auto}
+  header.menu-open #nav{display:flex}
+  #nav button{text-align:left;width:100%;padding:12px 16px;font-size:1rem}
+}
 main{max-width:960px;margin:auto;padding:20px 16px}
 /* options panel */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -140,6 +146,31 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
 .trophy-pop{text-align:center;padding:10px}
 .trophy-pop .big{font-size:4rem;animation:pulse 1.2s infinite}
+/* hamburger: white glyph on green so it shows in both themes */
+.hamburger{background:var(--green);border-color:var(--green);color:#fff}
+.hamburger:hover{border-color:var(--green-dark);filter:brightness(1.05)}
+/* daily card: word of the day + goal ring */
+.daily-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.wotd{flex:1;min-width:200px}
+.wotd-en{font-size:1.6rem;font-weight:900;color:var(--blue)}
+.wotd-hu{font-size:1.1rem;font-weight:700;color:var(--muted)}
+.wotd-ex{font-style:italic;color:var(--muted);margin-top:4px}
+.goal{display:flex;flex-direction:column;align-items:center;gap:4px}
+.ring{width:120px;height:120px}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:10}
+.ring-fg{fill:none;stroke:var(--green);stroke-width:10;stroke-linecap:round;transform:rotate(-90deg);transform-origin:60px 60px;stroke-dasharray:327;stroke-dashoffset:327;transition:stroke-dashoffset .6s}
+.ring text{text-anchor:middle;fill:var(--text);font-weight:900;font-size:1.5rem}
+.ring .ring-sub{fill:var(--muted);font-size:.7rem;font-weight:700}
+.goal-label{font-weight:800;color:var(--muted);font-size:.9rem}
+.goal.done .ring-fg{stroke:var(--gold)}
+/* practice sub-tabs */
+.subtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.subtabs button{border:2px solid var(--border);background:var(--card);color:var(--muted);font-weight:800;padding:8px 16px;border-radius:999px;cursor:pointer;transition:.15s}
+.subtabs button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.big-speak{font-size:1.4rem;padding:18px 26px;width:auto}
+.mic-btn{font-size:1.4rem;padding:18px 26px;width:auto;background:var(--red);box-shadow:0 3px 0 #b23c3c}
+.mic-btn.listening{animation:pulse 1s infinite}
+.heard{font-weight:800;font-size:1.1rem;margin:10px 0}
 /* mobile */
 @media(max-width:600px){
   html{font-size:15px}
@@ -213,12 +244,14 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
       </div>
       <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Világos / sötét mód">🌙</button>
       <button class="icon-btn" onclick="openOptions()" title="Beállítások">⚙️</button>
+      <button class="icon-btn hamburger" id="hamburger-btn" onclick="toggleMenu()" title="Menü">☰</button>
     </div>
   </div>
   <nav id="nav">
     <button data-page="home" class="active">🏠 Kezdőlap</button>
     <button data-page="path">🛤️ Tanulási út</button>
     <button data-page="lessons">📚 Leckék</button>
+    <button data-page="practice">🎧 Gyakorlás</button>
     <button data-page="quiz">🎯 Nagy kvíz</button>
     <button data-page="test">🏅 Szintfelmérő</button>
     <button data-page="translator">🔄 Fordító</button>
@@ -231,12 +264,33 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
 
 <!-- ===================== HOME ===================== -->
 <section id="page-home">
+  <div class="card" id="daily-card">
+    <div class="daily-wrap">
+      <div class="wotd">
+        <div class="mat-cat" style="margin:0 0 6px">📅 A nap szava</div>
+        <div class="wotd-en" id="wotd-en"></div>
+        <div class="wotd-hu" id="wotd-hu"></div>
+        <div class="wotd-ex" id="wotd-ex"></div>
+        <button class="btn ghost" style="width:auto;margin-top:8px;padding:8px 16px" id="wotd-speak">🔊 Meghallgatom</button>
+      </div>
+      <div class="goal">
+        <svg viewBox="0 0 120 120" class="ring">
+          <circle cx="60" cy="60" r="52" class="ring-bg"/>
+          <circle cx="60" cy="60" r="52" class="ring-fg" id="goal-ring"/>
+          <text x="60" y="56" id="goal-num">0</text>
+          <text x="60" y="76" class="ring-sub">/ 20 XP</text>
+        </svg>
+        <div class="goal-label" id="goal-label">Napi cél</div>
+      </div>
+    </div>
+  </div>
   <div class="card">
     <h1>Üdvözlünk az AngolÚton! 👋</h1>
     <p class="lead">Ingyenes, magyaroknak készült angoltanuló oldal. Nincs regisztráció, nincs reklám – a haladásod ebben a böngészőben mentődik automatikusan.</p>
     <div class="grid">
       <div class="card lesson-card" onclick="go('path')"><div class="emoji">🛤️</div><h2>Tanulási út</h2><p>100 szint + végtelen mód, véletlenszerű feladatokkal és kiejtéssel.</p></div>
       <div class="card lesson-card" onclick="go('lessons')"><div class="emoji">📚</div><h2>Leckék</h2><p>Szókártyák témák szerint: alapok, utazás, munka és több.</p></div>
+      <div class="card lesson-card" onclick="go('practice')"><div class="emoji">🎧</div><h2>Gyakorlás</h2><p>Hallás utáni írás, kiejtés-ellenőrzés és a hibáid átismétlése.</p></div>
       <div class="card lesson-card" onclick="go('quiz')"><div class="emoji">🎯</div><h2>Nagy kvíz</h2><p>10 kérdéses teszt írás- és beszédkészségre – XP-t érsz vele!</p></div>
       <div class="card lesson-card" onclick="go('translator')"><div class="emoji">🔄</div><h2>Fordító</h2><p>Tölts fel szövegfájlt – felismeri a nyelvet és lefordítja.</p></div>
       <div class="card lesson-card" onclick="go('materials')"><div class="emoji">📄</div><h2>Segédanyagok</h2><p>Nyelvvizsga PDF-ek: olvasás, szóbeli és íráskészség.</p></div>
@@ -311,6 +365,52 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
         <button class="btn" onclick="nextCard(true)">✅ Tudtam! (+2 XP)</button>
       </div>
       <div class="progressbar" style="margin-top:18px"><div id="lesson-progress"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PRACTICE (listening / speaking / mistakes) ===================== -->
+<section id="page-practice" class="hidden">
+  <div class="card">
+    <h1>🎧 Gyakorlás</h1>
+    <p class="lead">Fejleszd a hallás- és beszédkészséged, és nézd át a korábbi hibáidat.</p>
+    <div class="subtabs">
+      <button data-sub="listen" class="on" onclick="showPractice('listen')">🎧 Hallás</button>
+      <button data-sub="speak" onclick="showPractice('speak')">🎤 Beszéd</button>
+      <button data-sub="mistakes" onclick="showPractice('mistakes')">📋 Hibáim</button>
+    </div>
+
+    <!-- LISTENING -->
+    <div id="sub-listen">
+      <h2>🎧 Hallás utáni írás (diktálás)</h2>
+      <p class="lead">Kattints a hangszóróra, hallgasd meg az angol mondatot, és írd le, amit hallasz. A helyesírás és a szórend is számít!</p>
+      <div style="text-align:center;margin:16px 0"><button class="btn blue big-speak" id="listen-play">🔊 Lejátszás</button>
+        <button class="btn ghost" style="width:auto" id="listen-slow">🐢 Lassan</button></div>
+      <input type="text" id="listen-in" placeholder="Írd le, amit hallasz..." autocomplete="off">
+      <button class="btn" style="margin-top:10px" id="listen-check">Ellenőrzés</button>
+      <div id="listen-feedback"></div>
+    </div>
+
+    <!-- SPEAKING -->
+    <div id="sub-speak" class="hidden">
+      <h2>🎤 Kiejtés gyakorlása</h2>
+      <p class="lead" id="speak-support">Olvasd fel hangosan a mondatot, a böngésző pedig ellenőrzi, mennyire pontos a kiejtésed. <span class="pill">Chrome / Edge böngésző kell hozzá</span></p>
+      <div class="card" style="text-align:center;background:var(--bg)">
+        <div class="wotd-en" id="speak-target" style="font-size:1.3rem"></div>
+        <div class="wotd-hu" id="speak-hu"></div>
+        <button class="btn ghost" style="width:auto;margin-top:8px" id="speak-hear">🔊 Halld a mintát</button>
+      </div>
+      <div style="text-align:center;margin:14px 0"><button class="btn mic-btn" id="speak-mic">🎤 Felveszem</button></div>
+      <div class="heard" id="speak-heard"></div>
+      <div id="speak-feedback"></div>
+      <button class="btn blue" id="speak-next" style="margin-top:6px">Következő mondat →</button>
+    </div>
+
+    <!-- MISTAKES -->
+    <div id="sub-mistakes" class="hidden">
+      <h2>📋 Hibáim gyűjteménye</h2>
+      <p class="lead" id="mistakes-intro"></p>
+      <div id="mistakes-list"></div>
     </div>
   </div>
 </section>
@@ -451,7 +551,26 @@ const store = {
   document.getElementById('streak').textContent = s;
   document.getElementById('xp').textContent = store.xp;
 })();
-function addXP(n){ store.xp = store.xp + n; }
+const DAILY_GOAL = 20;
+function todayKey(){ return new Date().toDateString(); }
+function dayXP(){
+  return localStorage.getItem('au_dayDate')===todayKey() ? +(localStorage.getItem('au_dayXP')||0) : 0;
+}
+function addXP(n){
+  store.xp = store.xp + n;
+  const cur = dayXP();
+  localStorage.setItem('au_dayDate', todayKey());
+  localStorage.setItem('au_dayXP', cur+n);
+  if(!document.getElementById('page-home').classList.contains('hidden')) updateGoalRing();
+}
+/* record a wrong answer into the persistent mistake deck (deduped by correct answer) */
+function recordMistake(prompt, correct){
+  if(!correct) return;
+  let m; try{ m=JSON.parse(localStorage.getItem('au_mistakes')||'[]'); }catch(e){ m=[]; }
+  if(m.some(x=>x.correct===correct)) return;
+  m.unshift({prompt, correct, t:Date.now()});
+  localStorage.setItem('au_mistakes', JSON.stringify(m.slice(0,100)));
+}
 
 /* ---------- theme, font size, options ---------- */
 function applyTheme(){
@@ -512,13 +631,130 @@ function launchConfetti(){
   setTimeout(()=>box.classList.add('hidden'), 7000);
 }
 
+/* ---------- home: word of the day + daily goal ring ---------- */
+function allWords(){ return LESSONS.flatMap(l=>l.words); }
+function updateGoalRing(){
+  const xp=dayXP(), pct=Math.min(1, xp/DAILY_GOAL);
+  const ring=document.getElementById('goal-ring');
+  if(ring) ring.style.strokeDashoffset = 327*(1-pct);
+  const num=document.getElementById('goal-num'); if(num) num.textContent=xp;
+  const g=document.querySelector('.goal'); if(g) g.classList.toggle('done', xp>=DAILY_GOAL);
+  const lbl=document.getElementById('goal-label');
+  if(lbl) lbl.textContent = xp>=DAILY_GOAL ? '🎉 Napi cél kész!' : 'Napi cél';
+}
+function renderHome(){
+  const words=allWords();
+  // deterministic word of the day based on the date
+  const seed=Math.floor(Date.now()/864e5);
+  const w=words[seed % words.length];
+  document.getElementById('wotd-en').textContent=w[1];
+  document.getElementById('wotd-hu').textContent='🇭🇺 '+w[0];
+  document.getElementById('wotd-ex').textContent='„'+w[2]+'”';
+  document.getElementById('wotd-speak').onclick=()=>speak(w[1].split(' / ')[0]+'. '+w[2]);
+  updateGoalRing();
+}
+
+/* ---------- practice hub ---------- */
+let curPractice='listen';
+function showPractice(sub){
+  curPractice=sub;
+  ['listen','speak','mistakes'].forEach(s=>document.getElementById('sub-'+s).classList.toggle('hidden', s!==sub));
+  document.querySelectorAll('.subtabs button').forEach(b=>b.classList.toggle('on', b.dataset.sub===sub));
+  if(sub==='listen') newListen();
+  if(sub==='speak') newSpeak();
+  if(sub==='mistakes') renderMistakes();
+}
+function randomSentence(){
+  const band=SENTENCES[Math.floor(Math.random()*SENTENCES.length)];
+  return band[Math.floor(Math.random()*band.length)];
+}
+
+/* --- listening / dictation --- */
+let listenSent=null;
+function newListen(){
+  listenSent=randomSentence();
+  document.getElementById('listen-in').value='';
+  document.getElementById('listen-in').disabled=false;
+  document.getElementById('listen-feedback').innerHTML='';
+  setTimeout(()=>speak(listenSent[1]), 300);
+}
+document.getElementById('listen-play').onclick=()=>speak(listenSent[1]);
+document.getElementById('listen-slow').onclick=()=>{ if('speechSynthesis'in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(listenSent[1]);u.lang='en-US';u.rate=.55;speechSynthesis.speak(u);} };
+document.getElementById('listen-check').onclick=()=>{
+  const inp=document.getElementById('listen-in'); if(inp.disabled) return;
+  const ok=norm(inp.value)===norm(listenSent[1]); inp.disabled=true;
+  if(ok) addXP(8); else recordMistake('🎧 Hallás: 🇭🇺 '+listenSent[0], listenSent[1]);
+  document.getElementById('listen-feedback').innerHTML=
+    `<div class="feedback ${ok?'ok':'no'}">${ok?'✅ Tökéletes! +8 XP':'❌ A helyes mondat:'}<br><b>${listenSent[1]}</b><br><span style="font-weight:500">🇭🇺 ${listenSent[0]}</span></div>`+
+    `<button class="btn" style="margin-top:10px" onclick="newListen()">Következő →</button>`;
+};
+document.getElementById('listen-in').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('listen-check').click(); });
+
+/* --- speaking / pronunciation --- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let speakSent=null, recog=null;
+function newSpeak(){
+  speakSent=randomSentence();
+  document.getElementById('speak-target').textContent=speakSent[1];
+  document.getElementById('speak-hu').textContent='🇭🇺 '+speakSent[0];
+  document.getElementById('speak-heard').textContent='';
+  document.getElementById('speak-feedback').innerHTML='';
+  document.getElementById('speak-hear').onclick=()=>speak(speakSent[1]);
+  if(!SR){
+    document.getElementById('speak-support').innerHTML='⚠️ A böngésződ nem támogatja a beszédfelismerést. Próbáld Chrome vagy Edge böngészőben! Addig is a 🔊 gombbal hallgathatod a mintát.';
+    document.getElementById('speak-mic').disabled=true;
+  }
+}
+document.getElementById('speak-next').onclick=newSpeak;
+document.getElementById('speak-mic').onclick=()=>{
+  if(!SR) return;
+  recog=new SR(); recog.lang='en-US'; recog.interimResults=false; recog.maxAlternatives=1;
+  const btn=document.getElementById('speak-mic'); btn.classList.add('listening'); btn.textContent='🎙️ Beszélj...';
+  recog.onresult=e=>{
+    const heard=e.results[0][0].transcript;
+    document.getElementById('speak-heard').textContent='Ezt hallottam: „'+heard+'”';
+    const target=norm(speakSent[1]).split(' '), said=norm(heard).split(' ');
+    const hit=target.filter(w=>said.includes(w)).length;
+    const score=Math.round(hit/target.length*100);
+    let msg,cls;
+    if(score>=85){ msg='🌟 Kiváló kiejtés! +10 XP'; cls='ok'; addXP(10); }
+    else if(score>=60){ msg='👍 Jó! Gyakorold még a hiányzó szavakat. +5 XP'; cls='ok'; addXP(5); }
+    else { msg='😅 Próbáld újra – figyelj a szavak kiejtésére!'; cls='no'; recordMistake('🎤 Kiejtés: 🇭🇺 '+speakSent[0], speakSent[1]); }
+    document.getElementById('speak-feedback').innerHTML=`<div class="feedback ${cls}">${msg}<br>Egyezés: <b>${score}%</b></div>`;
+  };
+  recog.onerror=()=>{ document.getElementById('speak-feedback').innerHTML='<div class="feedback no">❌ Nem sikerült a felvétel. Engedélyezted a mikrofont?</div>'; };
+  recog.onend=()=>{ btn.classList.remove('listening'); btn.textContent='🎤 Felveszem'; };
+  recog.start();
+};
+
+/* --- mistakes review deck --- */
+function renderMistakes(){
+  let m; try{ m=JSON.parse(localStorage.getItem('au_mistakes')||'[]'); }catch(e){ m=[]; }
+  const intro=document.getElementById('mistakes-intro'), list=document.getElementById('mistakes-list');
+  if(!m.length){ intro.textContent='Még nincs egyetlen hibád sem – vagy nagyon ügyes vagy, vagy még nem gyakoroltál. 😊 A rossz válaszaid ide gyűlnek, hogy átismételhesd őket.'; list.innerHTML=''; return; }
+  intro.innerHTML=`Ezeket a szavakat/mondatokat rontottad el korábban (${m.length} db). Kattints a 🔊 ikonra a kiejtésért, és próbáld megjegyezni!`;
+  list.innerHTML=m.map((x,i)=>`<div class="err-item" style="border-left-color:var(--gold);display:flex;gap:10px;align-items:center">
+      <button class="icon-btn" style="flex-shrink:0" onclick="speak(${JSON.stringify(x.correct).replace(/"/g,'&quot;')})">🔊</button>
+      <div style="flex:1"><span class="good" style="font-size:1.05rem">${x.correct}</span><br><small style="color:var(--muted)">${x.prompt||''}</small></div>
+    </div>`).join('')+
+    `<button class="btn" style="background:var(--red);box-shadow:0 3px 0 #b23c3c;margin-top:8px" onclick="clearMistakes()">Lista törlése 🗑️</button>`;
+}
+function clearMistakes(){
+  if(!confirm('Törlöd az összes elmentett hibát?')) return;
+  localStorage.removeItem('au_mistakes'); renderMistakes();
+}
+
 /* ---------- navigation ---------- */
 function go(page){
   document.querySelectorAll('main > section').forEach(s=>s.classList.add('hidden'));
   document.getElementById('page-'+page).classList.remove('hidden');
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active', b.dataset.page===page));
+  document.querySelector('header').classList.remove('menu-open');
   window.scrollTo({top:0,behavior:'smooth'});
+  if(page==='home') renderHome();
+  if(page==='practice') showPractice(curPractice);
 }
+function toggleMenu(){ document.querySelector('header').classList.toggle('menu-open'); }
 document.getElementById('nav').addEventListener('click', e=>{ if(e.target.dataset.page) go(e.target.dataset.page); });
 
 /* ---------- lessons ---------- */
@@ -687,6 +923,7 @@ function checkTextAnswer(){
 }
 function finishQuestion(ok, why){
   if(ok){ qScore++; addXP(10); }
+  else { const q=QUIZ[qIdx]; recordMistake(q.q, q.type==='mc'?q.options[q.answer]:q.answers[0]); }
   document.getElementById('quiz-feedback').innerHTML =
     `<div class="feedback ${ok?'ok':'no'}">${ok?'✅ Helyes! +10 XP':'❌ Nem talált.'}<br><span style="font-weight:500">${why}</span></div>`;
   document.getElementById('quiz-next').classList.remove('hidden');
@@ -989,7 +1226,7 @@ document.getElementById('ps-text').addEventListener('keydown',e=>{ if(e.key==='E
 function psAnswer(ok, given){
   const q=psQs[psIdx];
   if(ok){ psCorrect++; addXP(5); }
-  else { psErrors.push({q:q.q, given, correct:q.correctText}); if(psEndless) psHearts--; }
+  else { psErrors.push({q:q.q, given, correct:q.correctText}); recordMistake(q.sub||q.q, q.correctText); if(psEndless) psHearts--; }
   document.getElementById('ps-scramble').classList.add('hidden');
   document.getElementById('ps-text-wrap').classList.add('hidden');
   document.getElementById('ps-feedback').innerHTML=
@@ -1167,7 +1404,7 @@ function showTestResult(){
   CEFR.forEach((q,i)=>{
     stats[q.l].total++;
     if(tAnswers[i]===q.a) stats[q.l].ok++;
-    else errors.push({q:q.q+' ('+q.l+')', given:q.o[tAnswers[i]], correct:q.o[q.a]});
+    else { errors.push({q:q.q+' ('+q.l+')', given:q.o[tAnswers[i]], correct:q.o[q.a]}); recordMistake(q.q+' ('+q.l+')', q.o[q.a]); }
   });
   // level = highest band with ≥55% while all previous bands also passed
   let level='A1 alatt';
@@ -1307,6 +1544,9 @@ function loadFile(f){
   r.onload=()=>{ document.getElementById('trans-in').value=r.result; translateText(); };
   r.readAsText(f,'utf-8');
 }
+
+/* ---------- init ---------- */
+renderHome();
 </script>
 </body>
 </html>
