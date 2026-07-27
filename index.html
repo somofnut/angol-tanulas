@@ -2,31 +2,52 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#39b54a">
 <title>AngolÚt – Tanulj angolul magyarként</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f7f9fc; --card:#ffffff; --text:#1c2430; --muted:#5b6b7f;
   --green:#39b54a; --green-dark:#2c9a3b; --blue:#2f80ed; --red:#e05252;
   --gold:#f2b134; --border:#e3e9f2; --shadow:0 2px 10px rgba(20,40,80,.08);
-  --radius:16px;
+  --radius:16px; --fs:16px;
 }
+.dark{ --bg:#141a22; --card:#1e2733; --text:#eaf0f7; --muted:#9db0c4; --border:#2c3947; --shadow:0 2px 10px rgba(0,0,0,.35); }
 @media (prefers-color-scheme: dark){
-  :root{ --bg:#141a22; --card:#1e2733; --text:#eaf0f7; --muted:#9db0c4; --border:#2c3947; --shadow:0 2px 10px rgba(0,0,0,.35); }
+  :root:not(.light){ --bg:#141a22; --card:#1e2733; --text:#eaf0f7; --muted:#9db0c4; --border:#2c3947; --shadow:0 2px 10px rgba(0,0,0,.35); }
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;padding-bottom:80px}
-header{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--border);box-shadow:var(--shadow)}
-.topbar{max-width:960px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:12px;flex-wrap:wrap}
-.logo{font-size:1.35rem;font-weight:800}
+html{font-size:var(--fs)}
+body{font-family:'Nunito','Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;padding-bottom:70px;-webkit-text-size-adjust:100%;transition:background .2s,color .2s}
+header{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--border);box-shadow:var(--shadow);padding-top:env(safe-area-inset-top)}
+.topbar{max-width:960px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;gap:10px}
+.logo{font-size:1.3rem;font-weight:900;white-space:nowrap}
 .logo span{color:var(--green)}
-.stats{display:flex;gap:14px;font-weight:700;font-size:.95rem}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.stats{display:flex;gap:12px;font-weight:800;font-size:.9rem;white-space:nowrap}
 .stats .xp{color:var(--gold)} .stats .streak{color:var(--red)}
-nav{display:flex;gap:6px;max-width:960px;margin:auto;padding:0 12px 10px;flex-wrap:wrap}
-nav button{border:none;background:transparent;color:var(--muted);font-weight:700;font-size:.95rem;padding:8px 14px;border-radius:999px;cursor:pointer;transition:.15s}
+.icon-btn{border:none;background:var(--bg);border:1px solid var(--border);width:38px;height:38px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;flex-shrink:0}
+.icon-btn:hover{border-color:var(--blue);transform:translateY(-1px)}
+nav{display:flex;gap:6px;max-width:960px;margin:auto;padding:0 12px 10px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{height:5px}
+nav::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px}
+nav button{border:none;background:transparent;color:var(--muted);font-weight:800;font-size:.92rem;padding:8px 14px;border-radius:999px;cursor:pointer;transition:.15s;white-space:nowrap;flex-shrink:0}
 nav button:hover{background:var(--bg)}
 nav button.active{background:var(--green);color:#fff}
 main{max-width:960px;margin:auto;padding:20px 16px}
+/* options panel */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;max-width:460px;width:100%;max-height:88vh;overflow-y:auto}
+.opt-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.opt-row:last-child{border-bottom:none}
+.opt-row .lbl{font-weight:700}
+.opt-row .lbl small{display:block;color:var(--muted);font-weight:600;font-size:.82rem}
+.seg{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.seg button{border:none;background:var(--bg);color:var(--muted);font-weight:800;padding:8px 12px;cursor:pointer;font-size:.9rem}
+.seg button.on{background:var(--blue);color:#fff}
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:18px}
 h1{font-size:1.7rem;margin-bottom:8px}
 h2{font-size:1.25rem;margin-bottom:10px}
@@ -107,16 +128,91 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
 .pdf-frame{width:100%;height:78vh;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
 .pdf-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
 .pdf-toolbar h2{flex:1;min-width:0;margin:0;font-size:1.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* difficulty meter */
+.diff{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.82rem;color:var(--muted)}
+.diff .bars{display:flex;gap:3px}
+.diff .bars i{width:16px;height:9px;border-radius:3px;background:var(--border);display:block}
+.diff.d1 .bars i:nth-child(-n+1),.diff.d2 .bars i:nth-child(-n+2),.diff.d3 .bars i:nth-child(-n+3),.diff.d4 .bars i:nth-child(-n+4),.diff.d5 .bars i:nth-child(-n+5){background:var(--lvl)}
+.diff.d1{--lvl:#39b54a}.diff.d2{--lvl:#8bc34a}.diff.d3{--lvl:#f2b134}.diff.d4{--lvl:#f2803a}.diff.d5{--lvl:#e05252}
+/* confetti */
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:100;overflow:hidden}
+.conf{position:absolute;width:11px;height:14px;top:-20px;opacity:.95;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
+.trophy-pop{text-align:center;padding:10px}
+.trophy-pop .big{font-size:4rem;animation:pulse 1.2s infinite}
+/* mobile */
+@media(max-width:600px){
+  html{font-size:15px}
+  .topbar{padding:8px 12px}
+  .logo{font-size:1.1rem}
+  .stats{font-size:.8rem;gap:8px}
+  main{padding:16px 12px}
+  .card{padding:16px}
+  h1{font-size:1.4rem}
+  .btn{padding:12px 18px;width:100%}
+  .pdf-toolbar .btn{width:auto}
+  .flash-inner{height:170px}
+  .pdf-frame{height:70vh}
+}
+@media(max-width:380px){ .stats .xp span,.stats .streak span{font-weight:900} }
 </style>
 </head>
 <body>
 
+<div id="confetti" class="hidden"></div>
+
+<!-- OPTIONS MODAL -->
+<div id="options-overlay" class="overlay hidden" onclick="if(event.target===this)closeOptions()">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <h2 style="margin:0">⚙️ Beállítások</h2>
+      <button class="icon-btn" onclick="closeOptions()">✖</button>
+    </div>
+    <div class="opt-row">
+      <div class="lbl">Megjelenés<small>Világos vagy sötét téma</small></div>
+      <div class="seg" id="seg-theme">
+        <button data-theme="light" onclick="setTheme('light')">☀️ Világos</button>
+        <button data-theme="dark" onclick="setTheme('dark')">🌙 Sötét</button>
+        <button data-theme="auto" onclick="setTheme('auto')">🔄 Auto</button>
+      </div>
+    </div>
+    <div class="opt-row">
+      <div class="lbl">Szövegméret<small>Nagyobb betű a könnyebb olvasáshoz</small></div>
+      <div class="seg" id="seg-fs">
+        <button data-fs="15" onclick="setFontSize('15')">A−</button>
+        <button data-fs="16" onclick="setFontSize('16')">A</button>
+        <button data-fs="18" onclick="setFontSize('18')">A+</button>
+        <button data-fs="20" onclick="setFontSize('20')">A++</button>
+      </div>
+    </div>
+    <div class="opt-row" style="display:block">
+      <div class="lbl" style="margin-bottom:8px">🔊 Kiejtés gyakorlása<small>Hallgasd meg az angol szavakat és mondatokat a leckékben és a Tanulási úton – kattints a 🔊 ikonra.</small></div>
+    </div>
+    <div class="opt-row" style="display:block">
+      <div class="lbl" style="margin-bottom:8px">🌐 Hasznos ingyenes források</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <a class="btn ghost" href="https://dictionary.cambridge.org/dictionary/english-hungarian/" target="_blank" rel="noopener">📖 Cambridge angol–magyar szótár</a>
+        <a class="btn ghost" href="https://www.bbc.co.uk/learningenglish" target="_blank" rel="noopener">🎧 BBC Learning English</a>
+        <a class="btn ghost" href="https://www.youtube.com/results?search_query=english+listening+practice+for+beginners" target="_blank" rel="noopener">▶️ Hallás utáni gyakorlás (YouTube)</a>
+      </div>
+    </div>
+    <div class="opt-row">
+      <div class="lbl" style="color:var(--red)">Haladás törlése<small>XP, szint, sorozat – nem visszavonható!</small></div>
+      <button class="btn" style="background:var(--red);box-shadow:0 3px 0 #b23c3c;width:auto" onclick="resetProgress()">Törlés 🗑️</button>
+    </div>
+  </div>
+</div>
+
 <header>
   <div class="topbar">
     <div class="logo">🇭🇺 Angol<span>Út</span> 🇬🇧</div>
-    <div class="stats">
-      <span class="xp">⭐ <span id="xp">0</span> XP</span>
-      <span class="streak">🔥 <span id="streak">0</span> nap</span>
+    <div class="topbar-right">
+      <div class="stats">
+        <span class="xp">⭐ <span id="xp">0</span></span>
+        <span class="streak">🔥 <span id="streak">0</span></span>
+      </div>
+      <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Világos / sötét mód">🌙</button>
+      <button class="icon-btn" onclick="openOptions()" title="Beállítások">⚙️</button>
     </div>
   </div>
   <nav id="nav">
@@ -139,7 +235,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
     <h1>Üdvözlünk az AngolÚton! 👋</h1>
     <p class="lead">Ingyenes, magyaroknak készült angoltanuló oldal. Nincs regisztráció, nincs reklám – a haladásod ebben a böngészőben mentődik automatikusan.</p>
     <div class="grid">
-      <div class="card lesson-card" onclick="go('path')"><div class="emoji">🛤️</div><h2>Tanulási út</h2><p>30 témázott szint + végtelen mód, véletlenszerű feladatokkal.</p></div>
+      <div class="card lesson-card" onclick="go('path')"><div class="emoji">🛤️</div><h2>Tanulási út</h2><p>100 szint + végtelen mód, véletlenszerű feladatokkal és kiejtéssel.</p></div>
       <div class="card lesson-card" onclick="go('lessons')"><div class="emoji">📚</div><h2>Leckék</h2><p>Szókártyák témák szerint: alapok, utazás, munka és több.</p></div>
       <div class="card lesson-card" onclick="go('quiz')"><div class="emoji">🎯</div><h2>Nagy kvíz</h2><p>10 kérdéses teszt írás- és beszédkészségre – XP-t érsz vele!</p></div>
       <div class="card lesson-card" onclick="go('translator')"><div class="emoji">🔄</div><h2>Fordító</h2><p>Tölts fel szövegfájlt – felismeri a nyelvet és lefordítja.</p></div>
@@ -155,7 +251,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
     <div class="card">
       <h1>🛤️ Tanulási út</h1>
       <p class="lead">Haladj lefelé a pályán! Minden szint <b>véletlenszerűen generált</b> feladatokat ad, amik a szintedhez igazodnak – ha nehezen megy, könnyebb kérdéseket kapsz, ha jól megy, nehezebbeket. Egy szint teljesítéséhez legalább <b>70%</b> kell.</p>
-      <p class="lead">🗓️ <b>1–5. szint:</b> hétköznapi beszélgetések · 💬 <b>6–10.:</b> ritkább mindennapi mondatok · 🧩 <b>11–20.:</b> összetett mondatok · 🎓 <b>21–30.:</b> haladó nyelv</p>
+      <p class="lead">🗓️ <b>1–20. szint:</b> hétköznapi beszélgetések · 💬 <b>21–45.:</b> ritkább mindennapi helyzetek · 🧩 <b>46–75.:</b> összetett mondatok · 🎓 <b>76–100.:</b> haladó nyelv. Minden kérdésnél látod a <b>nehézséget</b> és meghallgathatod a <b>kiejtést</b> 🔊. A 100. szint végén meglepetés vár! 🏆</p>
       <button class="btn" style="background:var(--gold);box-shadow:0 3px 0 #c98f1f" onclick="startEndless()">♾️ Végtelen mód – 3 élet, meddig jutsz?</button>
     </div>
     <div class="path" id="path-nodes"></div>
@@ -167,6 +263,10 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
         <button class="btn ghost" onclick="quitSession()">✖ Kilépés</button>
       </div>
       <div class="progressbar" style="margin:12px 0"><div id="ps-progress"></div></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap">
+        <div class="diff" id="ps-diff"><span>Nehézség</span><div class="bars"><i></i><i></i><i></i><i></i><i></i></div><span id="ps-diff-lbl"></span></div>
+        <button class="icon-btn" id="ps-speak" onclick="speak(psQs[psIdx].speak)" title="Kiejtés meghallgatása">🔊</button>
+      </div>
       <h2 id="ps-question"></h2>
       <p class="lead" id="ps-sub"></p>
       <div id="ps-options"></div>
@@ -202,6 +302,9 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
           <div class="flash-face"><div id="flash-front"></div><small>🇭🇺 magyar</small></div>
           <div class="flash-face back"><div id="flash-back"></div><small id="flash-example"></small></div>
         </div>
+      </div>
+      <div style="text-align:center;margin-bottom:12px">
+        <button class="btn ghost" style="width:auto" onclick="speak(document.getElementById('flash-back').textContent)" title="Kiejtés meghallgatása">🔊 Kiejtés meghallgatása</button>
       </div>
       <div style="text-align:center;display:flex;gap:12px;justify-content:center">
         <button class="btn" style="background:var(--red);box-shadow:0 3px 0 #b23c3c" onclick="nextCard(false)">😅 Nem tudtam</button>
@@ -349,6 +452,65 @@ const store = {
   document.getElementById('xp').textContent = store.xp;
 })();
 function addXP(n){ store.xp = store.xp + n; }
+
+/* ---------- theme, font size, options ---------- */
+function applyTheme(){
+  const t = localStorage.getItem('au_theme')||'auto';
+  const root=document.documentElement;
+  root.classList.remove('dark','light');
+  let dark;
+  if(t==='auto') dark = matchMedia('(prefers-color-scheme: dark)').matches;
+  else { root.classList.add(t); dark = t==='dark'; }
+  document.getElementById('theme-btn').textContent = dark?'☀️':'🌙';
+  document.querySelectorAll('#seg-theme button').forEach(b=>b.classList.toggle('on', b.dataset.theme===t));
+}
+function setTheme(t){ localStorage.setItem('au_theme', t); applyTheme(); }
+function toggleTheme(){
+  const cur=localStorage.getItem('au_theme')||'auto';
+  const dark = cur==='auto' ? matchMedia('(prefers-color-scheme: dark)').matches : cur==='dark';
+  setTheme(dark?'light':'dark');
+}
+function applyFontSize(){
+  const fs=localStorage.getItem('au_fs')||'16';
+  document.documentElement.style.setProperty('--fs', fs+'px');
+  document.querySelectorAll('#seg-fs button').forEach(b=>b.classList.toggle('on', b.dataset.fs===fs));
+}
+function setFontSize(fs){ localStorage.setItem('au_fs', fs); applyFontSize(); }
+applyTheme(); applyFontSize();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+function openOptions(){ document.getElementById('options-overlay').classList.remove('hidden'); }
+function closeOptions(){ document.getElementById('options-overlay').classList.add('hidden'); }
+function resetProgress(){
+  if(!confirm('Biztosan törlöd a teljes haladásodat? Ez nem vonható vissza.')) return;
+  ['au_xp','au_streak','au_last','au_pathLvl','au_pathAcc','au_endlessBest'].forEach(k=>localStorage.removeItem(k));
+  Object.keys(localStorage).filter(k=>k.startsWith('au_l_')).forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+/* ---------- text-to-speech (pronunciation) ---------- */
+function speak(text){
+  if(!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US'; u.rate=.9;
+  speechSynthesis.speak(u);
+}
+
+/* ---------- confetti (level 100 celebration) ---------- */
+function launchConfetti(){
+  const box=document.getElementById('confetti'); box.innerHTML=''; box.classList.remove('hidden');
+  const colors=['#39b54a','#2f80ed','#f2b134','#e05252','#8bc34a','#9b59b6'];
+  for(let i=0;i<160;i++){
+    const c=document.createElement('div'); c.className='conf';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDuration=(2.5+Math.random()*2.5)+'s';
+    c.style.animationDelay=(Math.random()*1.2)+'s';
+    c.style.transform='rotate('+Math.random()*360+'deg)';
+    box.appendChild(c);
+  }
+  setTimeout(()=>box.classList.add('hidden'), 7000);
+}
 
 /* ---------- navigation ---------- */
 function go(page){
@@ -549,7 +711,11 @@ function showResult(){
 }
 
 /* ---------- learning path ---------- */
-const PATH_NODES = ['👋','☕','🛒','🍽️','🗣️','📞','🏠','🚌','🩺','⭐','🧩','📖','💼','🌍','🎬','🧠','✉️','⚖️','🔬','⭐','🎓','📜','🏛️','💡','🖋️','🌐','🔮','🎭','🚀','🏆'];
+const LEVEL_COUNT = 100;
+/* 100 levels: a repeating set of themed emojis, ⭐ every 10th as a "milestone", 🏆 at the very end */
+const NODE_EMOJIS = ['👋','☕','🛒','🍽️','🗣️','📞','🏠','🚌','🩺','🧩','📖','💼','🌍','🎬','🧠','✉️','⚖️','🔬','🎓','📜','🏛️','💡','🖋️','🌐','🔮','🎭','🚀','🎯','📝','🔤'];
+const PATH_NODES = Array.from({length:LEVEL_COUNT}, (_,i)=>
+  i===LEVEL_COUNT-1 ? '🏆' : (i+1)%10===0 ? '⭐' : NODE_EMOJIS[i%NODE_EMOJIS.length]);
 /* themed sentence banks: [hungarian, english] – band by level */
 const SENTENCES = [
 /* band 0 · levels 1–5 · daily conversations */ [
@@ -688,8 +854,16 @@ function renderPath(){
 }
 renderPath();
 
-/* random question generation, themed by band, heavy on word-order games */
-function bandFor(lvl){ return lvl<5?0 : lvl<10?1 : lvl<20?2 : 3; }
+/* random question generation, themed by band, heavy on word-order games.
+   100 levels map onto 4 sentence bands; difficulty scales with band + type. */
+function bandFor(lvl){ return lvl<20?0 : lvl<45?1 : lvl<75?2 : 3; }
+function diffFor(band, type, len){
+  let d = band + 1;                       // band 0→1 … band 3→4
+  if(type==='mc') d -= 1;                 // multiple choice easier
+  else if(type==='text') d += 1;         // typing harder
+  else if(type==='scramble' && len>8) d += 1;
+  return Math.max(1, Math.min(5, d));
+}
 function genOne(nodeLvl){
   let band = bandFor(nodeLvl);
   if(pathState.acc < 0.5) band = Math.max(0, band-1);   // struggling → easier band
@@ -699,26 +873,29 @@ function genOne(nodeLvl){
   // weighted mix: ~50% scramble, 20% pick-the-translation, 15% blank, 15% vocab
   const roll = Math.random();
   const s = rnd(bank);
+  let q;
   if(roll < 0.5){ // sentence scramble
     const words = s[1].replace(/[.!?,]/g,'').split(' ');
-    return {type:'scramble', q:'Rakd helyes sorrendbe a mondatot!', sub:'🇭🇺 '+s[0],
-      words:shuffle(words), correct:words.join(' '), correctText:s[1]};
+    q = {type:'scramble', q:'Rakd helyes sorrendbe a mondatot!', sub:'🇭🇺 '+s[0],
+      words:shuffle(words), correct:words.join(' '), correctText:s[1], speak:s[1], len:words.length};
   } else if(roll < 0.7){ // pick the correct translation
     const others = shuffle(bank.filter(o=>o!==s)).slice(0,3);
     const opts = shuffle([s,...others].map(o=>o[1]));
-    return {type:'mc', q:`Melyik a helyes fordítása? „${s[0]}”`,
-      options:opts, answer:opts.indexOf(s[1]), correctText:s[1]};
+    q = {type:'mc', q:`Melyik a helyes fordítása? „${s[0]}”`,
+      options:opts, answer:opts.indexOf(s[1]), correctText:s[1], speak:s[1], len:s[1].split(' ').length};
   } else if(roll < 0.85){ // fill the blank in a sentence
     const words = s[1].replace(/[.!?,]/g,'').split(' ').filter(w=>w.length>3);
     const target = rnd(words);
     const rx = new RegExp('\\b'+target.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b');
-    return {type:'text', q:'Egészítsd ki: '+s[1].replace(rx,'_____'), sub:'🇭🇺 '+s[0]+' · (csak a hiányzó szót írd be)',
-      answers:[target, s[1]], correctText:s[1]};
+    q = {type:'text', q:'Egészítsd ki: '+s[1].replace(rx,'_____'), sub:'🇭🇺 '+s[0]+' · (csak a hiányzó szót írd be)',
+      answers:[target, s[1]], correctText:s[1], speak:s[1], len:s[1].split(' ').length};
   } else { // vocab typing
     const w = rnd(wordPool);
-    return {type:'text', q:`Írd be angolul: „${w[0].split(' / ')[0]}”`, sub:'💡 Kisbetű/nagybetű nem számít.',
-      answers:w[1].split(' / ').map(x=>x.toLowerCase()), correctText:w[1]};
+    q = {type:'text', q:`Írd be angolul: „${w[0].split(' / ')[0]}”`, sub:'💡 Kisbetű/nagybetű nem számít.',
+      answers:w[1].split(' / ').map(x=>x.toLowerCase()), correctText:w[1], speak:w[1].split(' / ')[0], len:1};
   }
+  q.diff = diffFor(band, q.type, q.len);
+  return q;
 }
 function genQuestions(nodeLvl){
   const qs=[], seen=new Set();
@@ -757,6 +934,9 @@ function showPsQuestion(){
     ? `♾️ Végtelen · ${psIdx+1}. kérdés · ${'❤️'.repeat(psHearts)}${'🖤'.repeat(3-psHearts)}`
     : `Szint ${psNode+1} · Kérdés ${psIdx+1} / ${psQs.length}`;
   document.getElementById('ps-progress').style.width = psEndless ? '100%' : (psIdx/psQs.length*100)+'%';
+  const DLBL=['','Nagyon könnyű','Könnyű','Közepes','Nehéz','Nagyon nehéz'];
+  document.getElementById('ps-diff').className='diff d'+q.diff;
+  document.getElementById('ps-diff-lbl').textContent=DLBL[q.diff];
   document.getElementById('ps-question').textContent=q.q;
   document.getElementById('ps-sub').textContent=q.sub||'';
   document.getElementById('ps-feedback').innerHTML='';
@@ -821,7 +1001,7 @@ function psNext(){
   if(psEndless){
     if(psHearts<=0){ endEndless(); return; }
     // difficulty ramps: +1 path level every 2 questions (caps at level 30)
-    psQs.push(genOne(Math.min(29, Math.floor(psIdx/2))));
+    psQs.push(genOne(Math.min(99, Math.floor(psIdx*1.2))));
     showPsQuestion(); return;
   }
   if(psIdx>=psQs.length){ endSession(); return; }
@@ -849,11 +1029,28 @@ function endEndless(){
 function endSession(){
   const ratio=psCorrect/psQs.length, passed=ratio>=0.7;
   pathState.acc = pathState.acc*0.6 + ratio*0.4; // rolling accuracy → adapts future difficulty
-  if(passed && psNode===pathState.lvl){ pathState.lvl=pathState.lvl+1; addXP(20); }
+  const leveledUp = passed && psNode===pathState.lvl;
+  if(leveledUp){ pathState.lvl=pathState.lvl+1; addXP(20); }
+  const finished = pathState.lvl>=LEVEL_COUNT && leveledUp; // just cleared level 100
   document.getElementById('path-session').classList.add('hidden');
   const r=document.getElementById('path-result');
   const errHtml = psErrors.length ? `<h3 style="margin-top:18px">📋 Ezeket rontottad el:</h3>`+
     psErrors.map(e=>`<div class="err-item"><b>${e.q}</b><br>Te: <span class="bad">${e.given}</span><br>Helyesen: <span class="good">${e.correct}</span></div>`).join('') : '';
+  if(finished){
+    launchConfetti();
+    r.innerHTML = `<div class="card big-result">
+      <div class="trophy-pop"><div class="big">🏆</div></div>
+      <div class="score" style="color:var(--gold)">100 / 100</div>
+      <h2>🎉 Gratulálunk! Végigcsináltad mind a 100 szintet!</h2>
+      <div class="motiv">Hihetetlen kitartás! Mostanra magabiztosan olvasol, írsz és fordítasz angolul. Próbáld ki a Szintfelmérőt, hogy lásd, milyen messzire jutottál! 🌟</div>
+      <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" onclick="go('test')">Szintfelmérő 🏅</button>
+        <button class="btn blue" onclick="startEndless()">Végtelen mód ♾️</button>
+        <button class="btn ghost" onclick="backToPath()">Vissza az úthoz 🛤️</button>
+      </div></div>`;
+    r.classList.remove('hidden');
+    return;
+  }
   r.innerHTML = `<div class="card big-result">
     <div class="score" style="color:${passed?'var(--green)':'var(--red)'}">${psCorrect} / ${psQs.length}</div>
     <h2>${passed?'🎉 Szint teljesítve! +20 XP bónusz':'😔 Ezúttal nem sikerült (70% kell)'}</h2>
