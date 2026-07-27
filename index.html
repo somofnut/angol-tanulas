@@ -96,6 +96,17 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
 .err-item .good{color:var(--green);font-weight:700}
 .err-item .bad{color:var(--red);text-decoration:line-through}
 .motiv{font-size:1.15rem;background:rgba(242,177,52,.12);border:1px solid var(--gold);border-radius:12px;padding:14px 18px;margin:14px 0;font-weight:600}
+/* materials / PDF viewer */
+.mat-card{display:flex;align-items:center;gap:14px;cursor:pointer;transition:.15s;padding:16px}
+.mat-card:hover{transform:translateY(-3px);border-color:var(--blue)}
+.mat-card .ic{font-size:2rem;flex-shrink:0}
+.mat-card .meta{flex:1;min-width:0}
+.mat-card h3{margin:0 0 2px}
+.mat-card p{color:var(--muted);font-size:.9rem;margin:0}
+.mat-cat{font-size:1.05rem;font-weight:800;margin:22px 0 10px;color:var(--muted)}
+.pdf-frame{width:100%;height:78vh;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+.pdf-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.pdf-toolbar h2{flex:1;min-width:0;margin:0;font-size:1.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -115,6 +126,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
     <button data-page="quiz">🎯 Nagy kvíz</button>
     <button data-page="test">🏅 Szintfelmérő</button>
     <button data-page="translator">🔄 Fordító</button>
+    <button data-page="materials">📄 Segédanyagok</button>
     <button data-page="tips">💡 Tippek</button>
   </nav>
 </header>
@@ -131,6 +143,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
       <div class="card lesson-card" onclick="go('lessons')"><div class="emoji">📚</div><h2>Leckék</h2><p>Szókártyák témák szerint: alapok, utazás, munka és több.</p></div>
       <div class="card lesson-card" onclick="go('quiz')"><div class="emoji">🎯</div><h2>Nagy kvíz</h2><p>10 kérdéses teszt írás- és beszédkészségre – XP-t érsz vele!</p></div>
       <div class="card lesson-card" onclick="go('translator')"><div class="emoji">🔄</div><h2>Fordító</h2><p>Tölts fel szövegfájlt – felismeri a nyelvet és lefordítja.</p></div>
+      <div class="card lesson-card" onclick="go('materials')"><div class="emoji">📄</div><h2>Segédanyagok</h2><p>Nyelvvizsga PDF-ek: olvasás, szóbeli és íráskészség.</p></div>
       <div class="card lesson-card" onclick="go('tips')"><div class="emoji">💡</div><h2>Tippek</h2><p>Magyar szemszögből: mire figyelj, mi a leggyakoribb hiba.</p></div>
     </div>
   </div>
@@ -263,6 +276,33 @@ footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:
       <button class="btn blue" onclick="exportTranslation()">Exportálás .txt-be 💾</button>
     </div>
     <p class="lead" id="trans-status" style="margin-top:10px"></p>
+  </div>
+</section>
+
+<!-- ===================== MATERIALS ===================== -->
+<section id="page-materials" class="hidden">
+  <div id="mat-list">
+    <div class="card">
+      <h1>📄 Segédanyagok</h1>
+      <p class="lead">Nyelvvizsga-felkészítő anyagok: olvasott szöveg értése (megoldókulcsokkal), szóbeli tételek és íráskészség. Kattints egy kártyára a megnyitáshoz – a böngészőben olvasható és letölthető.</p>
+    </div>
+    <div class="mat-cat">📖 Olvasott szöveg értése (Reading)</div>
+    <div class="grid" id="mat-reading"></div>
+    <div class="mat-cat">🗣️ Szóbeli (Speaking)</div>
+    <div class="grid" id="mat-speaking"></div>
+    <div class="mat-cat">✍️ Íráskészség (Writing)</div>
+    <div class="grid" id="mat-writing"></div>
+  </div>
+  <div id="mat-view" class="hidden">
+    <div class="card">
+      <div class="pdf-toolbar">
+        <button class="btn ghost" onclick="closePdf()">← Vissza</button>
+        <h2 id="pdf-title"></h2>
+        <a class="btn blue" id="pdf-open" target="_blank" rel="noopener">Új lapon 🔗</a>
+        <a class="btn" id="pdf-download" download>Letöltés 💾</a>
+      </div>
+      <iframe class="pdf-frame" id="pdf-frame" title="PDF"></iframe>
+    </div>
   </div>
 </section>
 
@@ -955,6 +995,54 @@ function showTestResult(){
       <button class="btn blue" onclick="go('path')">Tanulási úthoz 🛤️</button>
     </div></div>`;
   r.classList.remove('hidden');
+}
+
+/* ---------- materials (PDF viewer) ---------- */
+const MATERIALS = {
+  reading:[
+    {f:'reading-1.pdf', t:'Reading Task 1', d:'Olvasott szöveg értése – 1. feladat'},
+    {f:'reading-2.pdf', t:'Reading Task 2', d:'Olvasott szöveg értése – 2. feladat'},
+    {f:'reading-2-key.pdf', t:'Reading 2 – Megoldókulcs', d:'A 2. feladat helyes megoldásai', key:true},
+    {f:'reading-3.pdf', t:'Reading Task 3', d:'Olvasott szöveg értése – 3. feladat'},
+    {f:'reading-3-key.pdf', t:'Reading 3 – Megoldókulcs', d:'A 3. feladat helyes megoldásai', key:true},
+    {f:'reading-4.pdf', t:'Reading Task 4', d:'Olvasott szöveg értése – 4. feladat'},
+  ],
+  speaking:[
+    {f:'speaking-topics.pdf', t:'Szóbeli tételek', d:'A szóbeli vizsga témakörei és tételei'},
+  ],
+  writing:[
+    {f:'writing-checklist.pdf', t:'Íráskészség checklist', d:'Ellenőrzőlista íráshoz – mire figyelj'},
+    {f:'writing-sample.pdf', t:'Writing – Mintafeladat', d:'Kidolgozott írásbeli mintafeladat'},
+    {f:'writing-connectors.pdf', t:'Kötőszavak', d:'Hasznos kötőszavak az íráshoz (linking words)'},
+  ],
+};
+function renderMaterials(){
+  for(const [cat, items] of Object.entries(MATERIALS)){
+    const wrap=document.getElementById('mat-'+cat); wrap.innerHTML='';
+    items.forEach(m=>{
+      const div=document.createElement('div');
+      div.className='card mat-card';
+      div.innerHTML=`<div class="ic">${m.key?'🔑':'📄'}</div><div class="meta"><h3>${m.t}</h3><p>${m.d}</p></div>`;
+      div.onclick=()=>openPdf(m);
+      wrap.appendChild(div);
+    });
+  }
+}
+renderMaterials();
+function openPdf(m){
+  document.getElementById('mat-list').classList.add('hidden');
+  document.getElementById('mat-view').classList.remove('hidden');
+  document.getElementById('pdf-title').textContent=m.t;
+  const url='pdfs/'+m.f;
+  document.getElementById('pdf-frame').src=url;
+  document.getElementById('pdf-open').href=url;
+  const dl=document.getElementById('pdf-download'); dl.href=url; dl.download=m.f;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function closePdf(){
+  document.getElementById('pdf-frame').src='';
+  document.getElementById('mat-view').classList.add('hidden');
+  document.getElementById('mat-list').classList.remove('hidden');
 }
 
 /* ---------- translator ---------- */
